@@ -45,7 +45,7 @@ export async function renderStatus({ visitors, uiState, currentUser }) {
 
   if (filteredVisitors.length === 0) {
     const empty = document.createElement("div");
-    empty.className = "visitor-status__empty";
+    empty.className = "status-board__empty";
     empty.textContent = "검색 조건에 맞는 내방객 내역이 없습니다.";
     listRegion.replaceChildren(empty);
   } else {

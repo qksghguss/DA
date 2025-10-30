@@ -48,15 +48,15 @@ function createField(field) {
 
 function createCardSection() {
   const container = document.createElement("div");
-  container.className = "visitor-register__card";
+  container.className = "register-card";
   container.innerHTML = `
     <h4>출입카드 신청</h4>
-    <p class="helper-text">필요한 방문만 체크하고 대표자 정보를 입력하세요. 미반납 시 해당 연락처로 안내됩니다.</p>
-    <label class="inline-check visitor-register__card-toggle">
+    <p class="helper-text">필요한 방문에만 체크하고 대표자 정보를 입력하세요.</p>
+    <label class="inline-check register-card__toggle">
       <input type="checkbox" name="cardRequested" id="cardRequested" />
-      <span>출입카드를 신청합니다.</span>
+      <span>출입카드를 신청합니다</span>
     </label>
-    <div class="form-grid visitor-register__card-extra" data-role="card-extra" hidden>
+    <div class="register-card__fields" data-role="card-extra" hidden>
       <label class="field">
         <span class="field__label">대표자 선택</span>
         <select name="cardRepresentative"></select>
@@ -91,7 +91,7 @@ export function wireRegister({ root, currentUser, onSubmit }) {
     visitorList.innerHTML = "";
     if (visitorNames.length === 0) {
       const empty = document.createElement("div");
-      empty.className = "visitor-register__list-empty";
+      empty.className = "register-form__visitor-empty";
       empty.textContent = "등록된 방문자가 없습니다.";
       visitorList.appendChild(empty);
       return;
@@ -99,7 +99,7 @@ export function wireRegister({ root, currentUser, onSubmit }) {
 
     visitorNames.forEach((name, index) => {
       const pill = document.createElement("span");
-      pill.className = "visitor-register__pill";
+      pill.className = "register-pill";
       pill.innerHTML = `
         ${name}
         <button type="button" aria-label="${name} 삭제" data-index="${index}">×</button>

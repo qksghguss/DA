@@ -1,349 +1,249 @@
-.visitor-register {
-  display: grid;
+.register-board {
+  display: flex;
+  flex-direction: column;
   gap: 32px;
 }
 
-.visitor-register__hero {
+.register-board__header {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  gap: 32px;
-  padding: 40px;
-  border-radius: 32px;
-  background: linear-gradient(135deg, rgba(30, 95, 255, 0.1), rgba(15, 157, 88, 0.08));
-  border: 1px solid rgba(30, 95, 255, 0.12);
-  box-shadow: 0 32px 80px rgba(16, 42, 94, 0.15);
+  gap: 24px;
+  background: var(--surface);
+  border-radius: 28px;
+  padding: 32px;
+  box-shadow: 0 26px 60px rgba(15, 40, 88, 0.08);
+  border: 1px solid rgba(30, 95, 255, 0.08);
 }
 
-.visitor-register__hero-copy {
-  max-width: 520px;
-  display: grid;
-  gap: 16px;
-}
-
-.visitor-register__eyebrow {
-  font-size: 13px;
-  font-weight: 700;
+.register-board__eyebrow {
+  font-weight: 600;
+  color: var(--primary);
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--primary);
 }
 
-.visitor-register__description {
+.register-board__intro {
+  max-width: 420px;
   color: var(--muted);
-  line-height: 1.6;
 }
 
-.visitor-register__hero-metrics {
+.register-board__highlights {
   display: grid;
-  grid-template-columns: repeat(3, minmax(100px, 1fr));
-  gap: 18px;
-  margin: 0;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 16px;
+  align-items: stretch;
+  min-width: 280px;
 }
 
-.visitor-register__hero-metrics div {
-  padding: 18px;
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(30, 95, 255, 0.08);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+.register-board__highlights article {
+  background: var(--surface-alt);
+  border-radius: 18px;
+  padding: 18px 20px;
   display: grid;
   gap: 6px;
+  border: 1px solid rgba(30, 95, 255, 0.12);
 }
 
-.visitor-register__hero-metrics dt {
-  margin: 0;
+.register-board__highlights span {
   font-size: 13px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
   color: var(--muted);
 }
 
-.visitor-register__hero-metrics dd {
-  margin: 0;
-  font-size: 24px;
-  font-weight: 700;
-  color: var(--muted-strong);
+.register-board__highlights strong {
+  font-size: 22px;
 }
 
-.visitor-register__content {
+.register-board__grid {
   display: grid;
-  grid-template-columns: minmax(240px, 320px) minmax(0, 1fr);
+  grid-template-columns: minmax(260px, 320px) minmax(0, 1fr);
   gap: 28px;
 }
 
-.visitor-register__guide {
+.register-board__panel {
   background: var(--surface);
   border-radius: 28px;
-  padding: 28px;
+  padding: 32px;
+  box-shadow: 0 26px 60px rgba(15, 40, 88, 0.08);
   border: 1px solid rgba(30, 95, 255, 0.08);
-  box-shadow: 0 24px 64px rgba(15, 40, 88, 0.12);
-  display: grid;
-  gap: 20px;
-  align-content: start;
-}
-
-.visitor-register__guide h2 {
-  margin: 0;
-  font-size: 20px;
-}
-
-.visitor-register__guide ol {
-  margin: 0;
-  padding: 0;
-  display: grid;
-  gap: 16px;
-  list-style: none;
-}
-
-.visitor-register__guide li {
-  padding: 14px 16px;
-  border-radius: 18px;
-  background: var(--surface-alt);
-  border: 1px solid rgba(30, 95, 255, 0.08);
-  display: grid;
-  gap: 6px;
-}
-
-.visitor-register__guide strong {
-  font-size: 15px;
-}
-
-.visitor-register__guide span {
-  color: var(--muted);
-  font-size: 13px;
-  line-height: 1.5;
-}
-
-.visitor-register__guide-note {
-  margin: 0;
-  font-size: 13px;
-  color: var(--muted);
-  background: rgba(30, 95, 255, 0.08);
-  padding: 16px 18px;
-  border-radius: 18px;
-}
-
-.visitor-register__form {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 24px;
 }
 
-.form-card {
-  background: var(--surface);
-  border-radius: 28px;
-  border: 1px solid rgba(30, 95, 255, 0.08);
-  box-shadow: 0 26px 72px rgba(15, 40, 88, 0.12);
-  padding: 28px 30px;
-  display: grid;
-  gap: 22px;
+.register-board__panel h2 {
+  font-size: 22px;
 }
 
-.form-card__header {
-  display: flex;
-  gap: 18px;
-  align-items: flex-start;
-}
-
-.form-card__step {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 84px;
-  height: 32px;
-  border-radius: 999px;
-  background: rgba(30, 95, 255, 0.12);
-  color: var(--primary);
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-}
-
-.form-card__header h3 {
-  margin: 0;
-  font-size: 20px;
-}
-
-.form-card__header p {
-  margin: 4px 0 0;
-  color: var(--muted);
-  line-height: 1.5;
-}
-
-.form-card__body {
-  display: grid;
-  gap: 18px;
-}
-
-.form-card__body--columns {
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 28px;
-}
-
-.form-card__column {
+.register-board__panel--guide ol {
   display: grid;
   gap: 16px;
-  align-content: start;
+  counter-reset: step;
 }
 
-.form-card__column h4 {
-  margin: 0;
-  font-size: 16px;
-  font-weight: 700;
-}
-
-.form-grid {
+.register-board__panel--guide li {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 4px;
+  padding: 16px 18px;
+  border-radius: 18px;
+  background: rgba(244, 247, 255, 0.6);
+  border: 1px solid rgba(30, 95, 255, 0.12);
+}
+
+.register-board__panel--guide li strong {
+  font-size: 15px;
+}
+
+.register-board__panel--guide li span {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.register-board__note {
+  padding: 20px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px dashed rgba(30, 95, 255, 0.2);
+  display: grid;
+  gap: 6px;
+}
+
+.register-board__note h3 {
+  font-size: 15px;
+  color: var(--primary);
+}
+
+.register-form {
+  display: grid;
+  gap: 32px;
+}
+
+.register-form__section {
+  display: grid;
   gap: 18px;
 }
 
-.visitor-register__list-controls {
+.register-form__section legend {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.register-form__grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.register-form__section--split .register-form__columns {
+  display: grid;
+  gap: 24px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.register-form__list-controls {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 12px;
 }
 
-.visitor-register__list {
-  display: grid;
+.register-form__visitor-list {
+  display: flex;
+  flex-wrap: wrap;
   gap: 10px;
+  padding: 12px 0 4px;
+  min-height: 52px;
 }
 
-.visitor-register__card {
+.register-form__visitor-empty {
+  width: 100%;
+  padding: 18px;
+  background: rgba(244, 247, 255, 0.6);
+  border-radius: 14px;
+  text-align: center;
+  color: var(--muted);
+  border: 1px dashed rgba(30, 95, 255, 0.2);
+}
+
+.register-form__visitor-list .register-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(30, 95, 255, 0.12);
+  color: var(--primary);
+  font-size: 13px;
+}
+
+.register-form__visitor-list .register-pill button {
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+}
+
+.register-form__footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.register-form__footer p {
+  color: var(--muted);
+}
+
+.register-form__footer .button {
+  min-width: 200px;
+  height: 48px;
+}
+
+.register-card {
   display: grid;
   gap: 16px;
-  background: var(--surface-alt);
-  border: 1px solid rgba(30, 95, 255, 0.12);
-  border-radius: 22px;
   padding: 20px;
-  align-content: start;
-}
-
-.visitor-register__card h4 {
-  margin: 0;
-  font-size: 16px;
-}
-
-.visitor-register__card-toggle {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  padding: 12px 14px;
-  border-radius: 16px;
-  background: rgba(30, 95, 255, 0.08);
-  border: 1px solid rgba(30, 95, 255, 0.18);
-}
-
-.visitor-register__card-toggle span {
-  font-weight: 600;
-  color: var(--muted-strong);
-}
-
-.visitor-register__card-extra {
-  align-items: end;
-}
-
-.visitor-register__pill {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 16px;
-  border-radius: 14px;
-  background: var(--surface-alt);
+  border-radius: 18px;
+  background: rgba(244, 247, 255, 0.6);
   border: 1px solid rgba(30, 95, 255, 0.12);
-  font-weight: 600;
-  color: var(--muted-strong);
 }
 
-.visitor-register__pill button {
-  border: none;
-  background: transparent;
-  color: var(--primary);
-  font-size: 16px;
-  cursor: pointer;
-  padding: 4px 6px;
-  border-radius: 8px;
+.register-card__fields {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  margin-top: 4px;
 }
 
-.visitor-register__pill button:hover {
-  background: rgba(30, 95, 255, 0.08);
-}
-
-.visitor-register__list-empty {
-  text-align: center;
-  padding: 18px;
-  border-radius: 14px;
-  border: 1px dashed rgba(30, 95, 255, 0.2);
-  color: var(--muted);
-  background: var(--surface-alt);
-}
-
-.visitor-register__footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 24px;
-  padding: 26px 30px;
-  border-radius: 28px;
-  background: var(--surface);
-  border: 1px solid rgba(30, 95, 255, 0.08);
-  box-shadow: 0 20px 60px rgba(15, 40, 88, 0.12);
-}
-
-.visitor-register__footer h4 {
-  margin: 0 0 6px;
-}
-
-.visitor-register__footer p {
-  margin: 0;
-  color: var(--muted);
-}
-
-.visitor-register__submit {
-  min-width: 200px;
-  height: 52px;
-  font-size: 16px;
-}
-
-@media (max-width: 1200px) {
-  .visitor-register__content {
+@media (max-width: 960px) {
+  .register-board__grid {
     grid-template-columns: 1fr;
   }
 
-  .visitor-register__guide {
+  .register-board__panel--guide {
     order: 2;
   }
 }
 
-@media (max-width: 768px) {
-  .visitor-register__hero {
-    padding: 28px;
-  }
-
-  .form-card {
+@media (max-width: 600px) {
+  .register-board__header {
     padding: 24px;
   }
 
-  .visitor-register__footer {
+  .register-board__panel {
+    padding: 24px;
+  }
+
+  .register-form__footer {
     flex-direction: column;
     align-items: stretch;
   }
 
-  .visitor-register__submit {
+  .register-form__footer .button {
     width: 100%;
-  }
-}
-
-@media (max-width: 640px) {
-  .visitor-register__hero-metrics {
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  }
-
-  .form-card__header {
-    flex-direction: column;
-  }
-
-  .visitor-register__list-controls {
-    grid-template-columns: 1fr;
   }
 }

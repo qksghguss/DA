@@ -1,104 +1,91 @@
-<section class="visitor-register">
-  <header class="visitor-register__hero">
-    <div class="visitor-register__hero-copy">
-      <p class="visitor-register__eyebrow">Visitor Intake Studio</p>
-      <h1>내방객 초대부터 현장 인계까지, 차분하게 준비하세요</h1>
-      <p class="visitor-register__description">
-        방문사를 등록하면 대시보드와 현황 탭에서 실시간으로 공유됩니다. 준비해야 할 정보를
-        순서대로 안내해 드릴게요.
+<section class="register-board">
+  <header class="register-board__header">
+    <div>
+      <p class="register-board__eyebrow">Visitor Console</p>
+      <h1>내방객 등록</h1>
+      <p class="register-board__intro">
+        방문 일정을 등록하면 대시보드와 현황 탭에서 바로 공유됩니다. 필요한 정보를 한 번에 정리하세요.
       </p>
     </div>
-    <dl class="visitor-register__hero-metrics">
-      <div>
-        <dt>오늘 예정</dt>
-        <dd>7건</dd>
-      </div>
-      <div>
-        <dt>카드 신청</dt>
-        <dd>3건</dd>
-      </div>
-      <div>
-        <dt>마감 임박</dt>
-        <dd>2건</dd>
-      </div>
-    </dl>
+    <div class="register-board__highlights">
+      <article>
+        <span>오늘 예정</span>
+        <strong>7건</strong>
+      </article>
+      <article>
+        <span>카드 신청</span>
+        <strong>3건</strong>
+      </article>
+      <article>
+        <span>마감 임박</span>
+        <strong>2건</strong>
+      </article>
+    </div>
   </header>
-  <div class="visitor-register__content">
-    <aside class="visitor-register__guide">
-      <h2>등록 순서</h2>
+
+  <div class="register-board__grid">
+    <aside class="register-board__panel register-board__panel--guide">
+      <h2>등록 절차</h2>
       <ol>
         <li>
           <strong>방문 일정</strong>
-          <span>업체와 방문 시간을 먼저 입력하면 자동으로 요약됩니다.</span>
+          <span>업체와 방문 정보를 입력하면 일정 카드가 만들어집니다.</span>
         </li>
         <li>
           <strong>현장 담당</strong>
-          <span>인솔자와 점검 대상 정보를 남겨 협업 팀과 공유하세요.</span>
+          <span>인솔자와 점검 설비를 남겨 협업 팀과 공유하세요.</span>
         </li>
         <li>
           <strong>방문자 관리</strong>
-          <span>명단을 추가하고 필요 시 출입카드를 신청할 수 있습니다.</span>
+          <span>명단과 카드 신청 여부를 정리하면 후속 업무가 편해집니다.</span>
         </li>
       </ol>
-      <p class="visitor-register__guide-note">
-        저장 후에도 언제든지 현황 탭에서 정보를 수정하거나 카드 상태를 갱신할 수 있어요.
-      </p>
+      <div class="register-board__note">
+        <h3>도움말</h3>
+        <p>저장 후에도 현황 탭에서 방문 상태와 카드 정보를 언제든 업데이트할 수 있습니다.</p>
+      </div>
     </aside>
-    <form id="visitor-form" class="visitor-register__form">
-      <section class="form-card" data-section="schedule">
-        <header class="form-card__header">
-          <span class="form-card__step">STEP 01</span>
-          <div>
-            <h3>방문 일정</h3>
-            <p>업체명, 일정, 방문 위치를 입력하면 일정 카드가 만들어집니다.</p>
-          </div>
-        </header>
-        <div class="form-card__body">
-          <div class="form-grid" data-region="schedule-fields"></div>
-        </div>
-      </section>
-      <section class="form-card" data-section="onsite">
-        <header class="form-card__header">
-          <span class="form-card__step">STEP 02</span>
-          <div>
-            <h3>현장 담당 정보</h3>
-            <p>인솔자와 점검 설비 정보를 남겨 협업 팀에 전달하세요.</p>
-          </div>
-        </header>
-        <div class="form-card__body">
-          <div class="form-grid" data-region="onsite-fields"></div>
-        </div>
-      </section>
-      <section class="form-card form-card--split" data-section="visitors">
-        <header class="form-card__header">
-          <span class="form-card__step">STEP 03</span>
-          <div>
-            <h3>방문자 관리</h3>
-            <p>방문자 명단을 추가하고 카드 신청 여부를 선택하세요.</p>
-          </div>
-        </header>
-        <div class="form-card__body form-card__body--columns">
-          <div class="form-card__column">
-            <h4>방문자 명단</h4>
-            <p class="helper-text">입력 후 추가 버튼을 누르면 리스트에 쌓입니다.</p>
-            <div class="visitor-register__list-controls">
-              <input name="visitorName" placeholder="예: 김내방" />
-              <button type="button" class="button tertiary" data-action="add-visitor">추가</button>
+
+    <section class="register-board__panel register-board__panel--form">
+      <form id="visitor-form" class="register-form">
+        <fieldset class="register-form__section" data-section="schedule">
+          <legend>방문 일정</legend>
+          <p class="helper-text">업체명, 일정, 방문 위치를 입력하면 일정 카드가 자동으로 정리됩니다.</p>
+          <div class="register-form__grid" data-region="schedule-fields"></div>
+        </fieldset>
+
+        <fieldset class="register-form__section" data-section="onsite">
+          <legend>현장 담당</legend>
+          <p class="helper-text">인솔자와 점검 설비 정보를 남겨 협업 팀과 공유하세요.</p>
+          <div class="register-form__grid" data-region="onsite-fields"></div>
+        </fieldset>
+
+        <fieldset class="register-form__section register-form__section--split" data-section="visitors">
+          <legend>방문자 관리</legend>
+          <div class="register-form__columns">
+            <div>
+              <h4>방문자 명단</h4>
+              <p class="helper-text">입력 후 추가 버튼을 누르면 리스트에 쌓입니다.</p>
+              <div class="register-form__list-controls">
+                <input name="visitorName" placeholder="예: 김내방" />
+                <button type="button" class="button tertiary" data-action="add-visitor">추가</button>
+              </div>
+              <div class="register-form__visitor-list" data-role="visitor-list">
+                <div class="register-form__visitor-empty">등록된 방문자가 없습니다.</div>
+              </div>
             </div>
-            <div class="visitor-register__list" data-role="visitor-list">
-              <div class="visitor-register__list-empty">등록된 방문자가 없습니다.</div>
-            </div>
+            <div data-section="card"></div>
           </div>
-          <div class="form-card__column" data-section="card"></div>
-        </div>
-      </section>
-      <footer class="visitor-register__footer">
-        <div>
-          <h4>등록 전 확인하세요</h4>
-          <p>등록 버튼을 누르면 방문 일정이 생성되며, 담당자에게 알림이 전송됩니다.</p>
-        </div>
-        <button type="submit" class="button visitor-register__submit">내방객 등록하기</button>
-      </footer>
-    </form>
+        </fieldset>
+
+        <footer class="register-form__footer">
+          <div>
+            <h4>등록 전 확인</h4>
+            <p>등록 버튼을 누르면 방문 일정이 생성되고 담당자에게 알림이 전송됩니다.</p>
+          </div>
+          <button type="submit" class="button">내방객 등록하기</button>
+        </footer>
+      </form>
+    </section>
   </div>
 </section>
