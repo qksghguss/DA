@@ -1,0 +1,20 @@
+<section class="logs">
+  <header class="logs__header">
+    <div>
+      <p class="logs__eyebrow">관리자 전용</p>
+      <h2>활동 로그</h2>
+      <span class="helper-text">최신 순으로 시스템 사용 이력이 기록됩니다.</span>
+    </div>
+  </header>
+  <div class="logs__filters">
+    <label class="field">
+      <span class="field__label">활동 유형</span>
+      <select id="log-action-filter"></select>
+    </label>
+    <label class="field">
+      <span class="field__label">세부 검색</span>
+      <input id="log-search" type="search" placeholder="사용자, 상세 내용 검색" />
+    </label>
+  </div>
+  <div class="logs__list" data-region="list"></div>
+</section>
