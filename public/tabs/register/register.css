@@ -1,109 +1,95 @@
 .register {
-  display: grid;
-  gap: 32px;
-  background: radial-gradient(140% 140% at 20% 0%, rgba(62, 134, 255, 0.18), transparent 55%)
-      no-repeat,
-    var(--surface);
-  border-radius: 36px;
-  padding: 40px;
-  border: 1px solid rgba(30, 95, 255, 0.12);
-  box-shadow: 0 36px 90px rgba(11, 26, 58, 0.12);
-  position: relative;
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
 }
 
-.register__hero {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(220px, 280px);
-  gap: 32px;
-  align-items: start;
-  position: relative;
+.register__header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 32px;
+  border-radius: 28px;
+  background: var(--surface);
+  border: 1px solid rgba(30, 95, 255, 0.08);
+  box-shadow: 0 26px 60px rgba(15, 40, 88, 0.08);
 }
 
-.register__hero::after {
-  content: "";
-  position: absolute;
-  inset: -70px 30% auto auto;
-  width: 220px;
-  height: 220px;
-  background: radial-gradient(circle, rgba(96, 128, 255, 0.18), transparent 65%);
-  filter: blur(0.4px);
-  pointer-events: none;
-}
-
-.register__hero-text {
+.register__intro {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  max-width: 420px;
 }
 
 .register__eyebrow {
-  font-weight: 700;
-  letter-spacing: 0.12em;
+  font-weight: 600;
+  color: var(--primary);
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(26, 82, 255, 0.8);
   font-size: 13px;
 }
 
-.register__hero h2 {
-  margin: 0;
-  font-size: 32px;
-  line-height: 1.2;
+.register__header-side {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: flex-end;
+  flex: 1;
 }
 
-.register__hero .helper-text {
-  max-width: 520px;
-}
-
-.register__hero-hints {
+.register__tips {
   list-style: none;
   margin: 0;
-  padding: 20px 22px;
-  display: grid;
-  gap: 14px;
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.72);
-  border: 1px solid rgba(30, 95, 255, 0.1);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
-  font-size: 14px;
+  padding: 16px 20px;
+  background: var(--surface-alt);
+  border-radius: 18px;
+  border: 1px solid rgba(30, 95, 255, 0.08);
   color: var(--muted-strong);
+  display: grid;
+  gap: 10px;
+  max-width: 360px;
 }
 
-.register__hero-hints li::before {
+.register__tips li::before {
   content: "•";
   color: var(--primary);
-  margin-right: 8px;
+  margin-right: 6px;
   font-weight: 700;
 }
 
+.register__tips li {
+  display: flex;
+  align-items: flex-start;
+  font-size: 14px;
+}
+
 .register__submit {
-  justify-self: end;
-  align-self: center;
   min-width: 160px;
 }
 
 .register__layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 340px);
-  gap: 28px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 360px);
+  gap: 24px;
 }
 
 .register__column {
   display: grid;
-  gap: 24px;
+  gap: 20px;
   align-content: start;
 }
 
 .register__panel {
-  background: rgba(255, 255, 255, 0.9);
+  background: var(--surface);
   border-radius: 24px;
-  padding: 28px;
-  border: 1px solid rgba(30, 95, 255, 0.12);
-  box-shadow: 0 18px 60px rgba(15, 40, 88, 0.12);
+  padding: 24px 26px;
+  border: 1px solid rgba(30, 95, 255, 0.08);
+  box-shadow: 0 22px 52px rgba(15, 40, 88, 0.08);
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  position: relative;
+  gap: 18px;
 }
 
 .register__panel header {
@@ -114,13 +100,13 @@
 
 .register__panel h3 {
   margin: 0;
-  font-size: 19px;
+  font-size: 18px;
 }
 
 .register__grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 18px;
+  gap: 16px;
 }
 
 .register__grid--card {
@@ -128,8 +114,7 @@
 }
 
 .register__panel--list {
-  gap: 20px;
-  background: linear-gradient(135deg, rgba(55, 102, 255, 0.14), rgba(255, 255, 255, 0.92));
+  gap: 18px;
 }
 
 .register__list-controls {
@@ -145,7 +130,7 @@
 .register__visitor-list {
   display: grid;
   grid-auto-rows: minmax(38px, auto);
-  gap: 12px;
+  gap: 10px;
 }
 
 .register__pill {
@@ -154,98 +139,76 @@
   justify-content: space-between;
   gap: 10px;
   padding: 10px 14px;
-  border-radius: 14px;
-  background: rgba(14, 47, 132, 0.12);
+  border-radius: 12px;
+  background: var(--surface-alt);
   color: var(--muted-strong);
   font-weight: 600;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(30, 95, 255, 0.12);
 }
 
 .register__pill button {
-  background: rgba(255, 255, 255, 0.4);
+  background: transparent;
   border: none;
   color: var(--primary);
   cursor: pointer;
   padding: 4px 8px;
-  border-radius: 10px;
+  border-radius: 8px;
   font-size: 14px;
   transition: background 0.2s ease;
 }
 
 .register__pill button:hover {
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(30, 95, 255, 0.08);
 }
 
 .register__list-empty {
-  padding: 18px;
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.7);
-  border: 1px dashed rgba(30, 95, 255, 0.4);
+  padding: 16px;
+  border-radius: 14px;
+  background: var(--surface-alt);
+  border: 1px dashed rgba(30, 95, 255, 0.2);
   color: var(--muted);
   font-size: 14px;
+  text-align: center;
 }
 
 .register__panel--card {
-  gap: 18px;
-  background: linear-gradient(155deg, rgba(30, 95, 255, 0.18), rgba(255, 255, 255, 0.92));
-}
-
-.register__panel--card h3 {
-  color: var(--primary);
+  gap: 16px;
 }
 
 .register label.field textarea {
   min-height: 120px;
 }
 
-.register .inline-check {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 14px 16px;
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.7);
-  border: 1px solid rgba(30, 95, 255, 0.16);
-}
-
-.register .inline-check span {
-  font-weight: 600;
-}
-
-@media (max-width: 1024px) {
-  .register {
-    padding: 32px 28px;
-    border-radius: 28px;
-  }
-
-  .register__hero {
-    grid-template-columns: 1fr;
-  }
-
-  .register__hero-hints {
-    order: 3;
-  }
-
-  .register__submit {
-    justify-self: stretch;
-  }
-
+@media (max-width: 1080px) {
   .register__layout {
     grid-template-columns: 1fr;
+  }
+
+  .register__header-side {
+    align-items: flex-start;
+    max-width: none;
+  }
+
+  .register__tips {
+    max-width: 100%;
   }
 }
 
 @media (max-width: 640px) {
-  .register {
+  .register__header {
     padding: 24px;
-    gap: 24px;
   }
 
   .register__panel {
-    padding: 22px;
+    padding: 20px 22px;
   }
 
-  .register__hero h2 {
-    font-size: 26px;
+  .register__list-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .register__submit {
+    align-self: stretch;
   }
 }

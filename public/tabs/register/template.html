@@ -1,23 +1,27 @@
 <form id="visitor-form" class="register">
-  <section class="register__hero">
-    <div class="register__hero-text">
+  <header class="register__header">
+    <div class="register__intro">
       <p class="register__eyebrow">내방객 등록</p>
-      <h2>입·퇴장 흐름을 한 눈에 관리하세요</h2>
-      <span class="helper-text">방문 업체·일정과 사내 인솔 정보를 나눠 입력하면 대시보드에서 즉시 반영됩니다.</span>
+      <h2>방문 일정을 빠르게 기록하고 공유하세요</h2>
+      <span class="helper-text"
+        >방문 일정과 현장 담당 정보를 입력하면 대시보드와 현황 탭에 즉시 반영됩니다.</span
+      >
     </div>
-    <ul class="register__hero-hints">
-      <li>방문 예정 시간과 장소를 먼저 입력하세요.</li>
-      <li>방문자 명단은 추가 버튼으로 개별 등록할 수 있습니다.</li>
-      <li>카드 신청 시 대표자 선택과 연락처 입력이 필요합니다.</li>
-    </ul>
-    <button type="submit" class="button register__submit">등록 완료</button>
-  </section>
+    <div class="register__header-side">
+      <ul class="register__tips">
+        <li>방문 예정 시간과 장소를 먼저 입력하세요.</li>
+        <li>방문자 명단은 추가 버튼으로 개별 등록할 수 있습니다.</li>
+        <li>카드 신청 시 대표자 선택과 연락처 입력이 필요합니다.</li>
+      </ul>
+      <button type="submit" class="button register__submit">등록 완료</button>
+    </div>
+  </header>
   <div class="register__layout">
     <div class="register__column register__column--left">
       <section class="register__panel" data-section="schedule">
         <header>
           <h3>방문 일정</h3>
-          <span class="helper-text">방문사와 시간대, 장소를 입력합니다.</span>
+          <span class="helper-text">방문 업체, 시간대, 장소를 입력하세요.</span>
         </header>
         <div class="register__grid"></div>
       </section>
@@ -27,7 +31,7 @@
       <section class="register__panel" data-section="onsite">
         <header>
           <h3>현장 담당 정보</h3>
-          <span class="helper-text">사내 인솔자와 점검 대상 장비를 입력합니다.</span>
+          <span class="helper-text">사내 인솔자와 점검 설비 정보를 입력합니다.</span>
         </header>
         <div class="register__grid"></div>
       </section>
