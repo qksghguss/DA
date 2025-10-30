@@ -1,21 +1,39 @@
-import { hydrateState, state, uiState, addLog, registerVisitor, removeVisitor, updateVisitor, setActiveTab, getAvailableTabs, resetSession, persistAppState } from "./state/store.js";
-import { renderLogin, wireLogin } from "./views/login.js";
-import { renderShell, wireShell } from "./views/shell.js";
-import { renderDashboard, wireDashboard } from "./views/dashboard.js";
-import { renderRegister, wireRegister } from "./views/register.js";
-import { renderStatus, wireStatus, describeChange } from "./views/status.js";
-import { renderLogs } from "./views/logs.js";
-import { renderSettings, wireSettings } from "./views/settings.js";
+import {
+  hydrateState,
+  state,
+  uiState,
+  addLog,
+  registerVisitor,
+  removeVisitor,
+  updateVisitor,
+  setActiveTab,
+  getAvailableTabs,
+  resetSession,
+  persistAppState,
+} from "./state/store.js";
 import { formatKoreanTime } from "./utils/formatters.js";
+import { renderShell, wireShell } from "./core/shell.js";
+import { ensureStylesheets } from "./core/styles.js";
+import * as LoginTab from "../tabs/login/index.js";
+import * as DashboardTab from "../tabs/dashboard/index.js";
+import * as RegisterTab from "../tabs/register/index.js";
+import * as StatusTab from "../tabs/status/index.js";
+import * as LogsTab from "../tabs/logs/index.js";
+import * as SettingsTab from "../tabs/settings/index.js";
 
 hydrateState();
 renderApp();
 
-function renderApp() {
+async function renderApp() {
   const root = document.getElementById("app");
+  if (!root) return;
+
   if (!state.currentUser) {
-    root.innerHTML = renderLogin();
-    wireLogin({
+    ensureStylesheets(LoginTab.styles);
+    const loginView = await LoginTab.renderLogin();
+    root.replaceChildren(loginView);
+    LoginTab.wireLogin({
+      root: loginView,
       findUser: (id, password) => state.users.find((user) => user.id === id && user.password === password),
       onLogin: (user) => {
         state.currentUser = user;
@@ -70,25 +88,37 @@ function renderApp() {
     },
   });
 
-  renderActiveTab();
+  await renderActiveTab();
 }
 
-function renderActiveTab() {
-  const root = document.getElementById("tab-root");
+async function renderActiveTab() {
+  const mount = document.getElementById("tab-root");
+  if (!mount) return;
 
-  switch (state.activeTab) {
-    case "dashboard":
-      root.innerHTML = renderDashboard({ visitors: state.visitors });
-      wireDashboard({
+  const activeTab = state.activeTab;
+
+  switch (activeTab) {
+    case "dashboard": {
+      ensureStylesheets(DashboardTab.styles);
+      const view = await DashboardTab.renderDashboard({ visitors: state.visitors });
+      if (state.activeTab !== activeTab) return;
+      mount.replaceChildren(view);
+      DashboardTab.wireDashboard({
+        root: view,
         onQuickRegister: () => {
           setActiveTab("register");
           renderApp();
         },
       });
       break;
-    case "register":
-      root.innerHTML = renderRegister();
-      wireRegister({
+    }
+    case "register": {
+      ensureStylesheets(RegisterTab.styles);
+      const view = await RegisterTab.renderRegister();
+      if (state.activeTab !== activeTab) return;
+      mount.replaceChildren(view);
+      RegisterTab.wireRegister({
+        root: view,
         currentUser: state.currentUser,
         onSubmit: (visitor) => {
           registerVisitor(visitor);
@@ -98,9 +128,14 @@ function renderActiveTab() {
         },
       });
       break;
-    case "status":
-      root.innerHTML = renderStatus({ visitors: state.visitors, uiState, currentUser: state.currentUser });
-      wireStatus({
+    }
+    case "status": {
+      ensureStylesheets(StatusTab.styles);
+      const view = await StatusTab.renderStatus({ visitors: state.visitors, uiState, currentUser: state.currentUser });
+      if (state.activeTab !== activeTab) return;
+      mount.replaceChildren(view);
+      StatusTab.wireStatus({
+        root: view,
         onSearchChange: (term) => {
           uiState.searchTerm = term;
           renderApp();
@@ -117,22 +152,32 @@ function renderActiveTab() {
         onDelete: handleVisitorDelete,
       });
       break;
-    case "logs":
+    }
+    case "logs": {
       if (state.currentUser.role !== "admin") {
         setActiveTab("dashboard");
         renderApp();
         return;
       }
-      root.innerHTML = renderLogs({ logs: state.logs });
+      ensureStylesheets(LogsTab.styles);
+      const view = await LogsTab.renderLogs({ logs: state.logs });
+      if (state.activeTab !== activeTab) return;
+      mount.replaceChildren(view);
+      LogsTab.wireLogs?.({ root: view });
       break;
-    case "settings":
+    }
+    case "settings": {
       if (state.currentUser.role !== "admin") {
         setActiveTab("dashboard");
         renderApp();
         return;
       }
-      root.innerHTML = renderSettings({ users: state.users });
-      wireSettings({
+      ensureStylesheets(SettingsTab.styles);
+      const view = await SettingsTab.renderSettings({ users: state.users });
+      if (state.activeTab !== activeTab) return;
+      mount.replaceChildren(view);
+      SettingsTab.wireSettings({
+        root: view,
         onSubmit: (user) => {
           if (!user.id || !user.name || !user.password || !user.process) {
             alert("모든 필드를 입력해주세요.");
@@ -150,6 +195,7 @@ function renderActiveTab() {
         },
       });
       break;
+    }
   }
 }
 
@@ -209,7 +255,7 @@ function handleVisitorUpdate({ id, visitStatus, exitTimeRaw, cardStatus, cardNum
     return next;
   });
 
-  const changes = describeChange({
+  const changes = StatusTab.describeChange({
     previousVisitStatus,
     nextVisitStatus: visitStatus,
     previousCardStatus,

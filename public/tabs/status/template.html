@@ -1,0 +1,30 @@
+<section class="status">
+  <header class="status__header">
+    <div>
+      <p class="status__eyebrow">내방객 현황</p>
+      <h2>실시간 방문 / 카드 처리 상황</h2>
+    </div>
+  </header>
+  <div class="status__body">
+    <aside class="status__summary" data-region="summary"></aside>
+    <div class="status__workspace">
+      <div class="status__toolbar">
+        <label class="field status__search">
+          <span class="field__label">검색</span>
+          <input id="status-search" type="search" placeholder="업체명, 방문자, 목적 검색" />
+        </label>
+        <div class="status__filters">
+          <label class="field">
+            <span class="field__label">방문 상태</span>
+            <select id="status-filter"></select>
+          </label>
+          <label class="field">
+            <span class="field__label">카드 상태</span>
+            <select id="card-filter"></select>
+          </label>
+        </div>
+      </div>
+      <div class="status__list" data-region="list"></div>
+    </div>
+  </div>
+</section>
