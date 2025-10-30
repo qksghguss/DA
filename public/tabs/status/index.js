@@ -101,19 +101,54 @@ function createVisitorCard(item, currentUser) {
   const canManageCard = currentUser.role === "admin";
   const canDelete = currentUser.role === "admin" || item.createdBy.id === currentUser.id;
   const prettyDate = formatKoreanDate(item.visitDateRaw) || formatDateTime(item.visitDateRaw, item.visitTimeRaw);
-  const prettyTime = formatKoreanTime(item.visitTimeRaw);
+  const prettyTime = formatKoreanTime(item.visitTimeRaw) || formatDateTime(item.visitDateRaw, item.visitTimeRaw);
 
   const article = document.createElement("article");
   article.className = "visitor-card";
   article.dataset.id = item.id;
   article.innerHTML = `
-    <div class="visitor-card__aside">
-      <div class="visitor-card__schedule">
-        <span class="field__label">방문 일정</span>
-        <strong>${prettyDate}</strong>
-        <span class="helper-text">${prettyTime || formatDateTime(item.visitDateRaw, item.visitTimeRaw)}</span>
+    <header class="visitor-card__hero">
+      <div class="visitor-card__company">
+        <div class="visitor-card__schedule">
+          <span class="field__label">방문 일정</span>
+          <strong>${prettyDate}</strong>
+          <span class="helper-text">${prettyTime}</span>
+        </div>
+        <h4>${item.companyName}</h4>
+        <span class="visitor-card__escort">${item.escort} · 사내 담당</span>
       </div>
-      <div class="visitor-card__control-group">
+      <div class="visitor-card__chips">
+        ${renderStatusTag(item.visitStatus)}
+        ${renderCardTag(item.cardStatus)}
+      </div>
+    </header>
+    <div class="visitor-card__body">
+      <dl class="visitor-card__info">
+        <div>
+          <dt>방문자 명단</dt>
+          <dd>${item.visitors.join(", ")}</dd>
+        </div>
+        <div>
+          <dt>방문 위치</dt>
+          <dd>${item.location}</dd>
+        </div>
+        <div>
+          <dt>점검 설비</dt>
+          <dd>${item.equipment || "-"}</dd>
+        </div>
+        ${
+          item.cardRequested
+            ? `<div><dt>카드 대표자</dt><dd>${item.cardRepresentative ?? "-"} · ${item.cardContact ?? "연락처 미입력"}</dd></div>`
+            : ""
+        }
+      </dl>
+      <section class="visitor-card__purpose">
+        <h5>방문 목적</h5>
+        <p>${item.purpose}</p>
+      </section>
+    </div>
+    <div class="visitor-card__controls">
+      <div class="visitor-card__control-grid">
         <label class="field">
           <span class="field__label">방문 상태</span>
           <select name="visitStatus" ${canEdit ? "" : "disabled"}>
@@ -139,45 +174,10 @@ function createVisitorCard(item, currentUser) {
           <input name="cardNumber" value="${item.cardNumber ?? ""}" ${canManageCard ? "" : "disabled"} placeholder="예: 1234" />
         </label>
       </div>
-      <div class="visitor-card__aside-actions">
+      <div class="visitor-card__actions">
         <button class="button" data-action="save" ${canEdit ? "" : "disabled"}>저장</button>
         <button class="button secondary" data-action="delete" ${canDelete ? "" : "disabled"}>삭제</button>
       </div>
-    </div>
-    <div class="visitor-card__content">
-      <header class="visitor-card__header">
-        <div>
-          <h4>${item.companyName}</h4>
-          <span class="visitor-card__escort">${item.escort} · 사내 담당</span>
-        </div>
-        <div class="visitor-card__tags">
-          ${renderStatusTag(item.visitStatus)}
-          ${renderCardTag(item.cardStatus)}
-        </div>
-      </header>
-      <dl class="visitor-card__info">
-        <div>
-          <dt>방문자 명단</dt>
-          <dd>${item.visitors.join(", ")}</dd>
-        </div>
-        <div>
-          <dt>방문 위치</dt>
-          <dd>${item.location}</dd>
-        </div>
-        <div>
-          <dt>점검 설비</dt>
-          <dd>${item.equipment || "-"}</dd>
-        </div>
-        ${
-          item.cardRequested
-            ? `<div><dt>카드 대표자</dt><dd>${item.cardRepresentative ?? "-"} · ${item.cardContact ?? "연락처 미입력"}</dd></div>`
-            : ""
-        }
-      </dl>
-      <section class="visitor-card__purpose">
-        <h5>방문 목적</h5>
-        <p>${item.purpose}</p>
-      </section>
       <footer class="visitor-card__footer">
         <span>등록자 ${item.createdBy.name}</span>
         <span>최근 퇴장 입력 ${item.exitTimeFormatted || "-"}</span>

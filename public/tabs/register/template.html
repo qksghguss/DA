@@ -1,28 +1,37 @@
 <form id="visitor-form" class="register">
-  <header class="register__header">
-    <div>
+  <section class="register__hero">
+    <div class="register__hero-text">
       <p class="register__eyebrow">내방객 등록</p>
-      <h2>방문 예약 정보를 입력하세요</h2>
-      <span class="helper-text">방문 일정과 담당자를 구분하여 입력하면 현황 파악이 빨라집니다.</span>
+      <h2>입·퇴장 흐름을 한 눈에 관리하세요</h2>
+      <span class="helper-text">방문 업체·일정과 사내 인솔 정보를 나눠 입력하면 대시보드에서 즉시 반영됩니다.</span>
     </div>
-    <button type="submit" class="button">등록 완료</button>
-  </header>
-  <div class="register__content">
-    <section class="register__section register__section--two-column">
-      <article class="register__panel" data-section="schedule">
-        <h3>방문 일정</h3>
+    <ul class="register__hero-hints">
+      <li>방문 예정 시간과 장소를 먼저 입력하세요.</li>
+      <li>방문자 명단은 추가 버튼으로 개별 등록할 수 있습니다.</li>
+      <li>카드 신청 시 대표자 선택과 연락처 입력이 필요합니다.</li>
+    </ul>
+    <button type="submit" class="button register__submit">등록 완료</button>
+  </section>
+  <div class="register__layout">
+    <div class="register__column register__column--left">
+      <section class="register__panel" data-section="schedule">
+        <header>
+          <h3>방문 일정</h3>
+          <span class="helper-text">방문사와 시간대, 장소를 입력합니다.</span>
+        </header>
         <div class="register__grid"></div>
-      </article>
-      <article class="register__panel" data-section="onsite">
-        <h3>현장 담당 정보</h3>
+      </section>
+      <section class="register__panel register__panel--list" data-section="visitors"></section>
+    </div>
+    <div class="register__column register__column--right">
+      <section class="register__panel" data-section="onsite">
+        <header>
+          <h3>현장 담당 정보</h3>
+          <span class="helper-text">사내 인솔자와 점검 대상 장비를 입력합니다.</span>
+        </header>
         <div class="register__grid"></div>
-      </article>
-    </section>
-    <section class="register__section">
-      <article class="register__panel register__panel--list" data-section="visitors"></article>
-    </section>
-    <section class="register__section">
-      <article class="register__panel register__panel--card" data-section="card"></article>
-    </section>
+      </section>
+      <section class="register__panel register__panel--card" data-section="card"></section>
+    </div>
   </div>
 </form>

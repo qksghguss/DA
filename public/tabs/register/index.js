@@ -52,7 +52,7 @@ function createVisitorsSection() {
   const container = document.createElement("div");
   container.innerHTML = `
     <h3>방문자 명단</h3>
-    <p class="helper-text">이름을 입력하고 추가 버튼을 눌러 명단을 완성하세요.</p>
+    <p class="helper-text">내방객 이름을 입력한 뒤 추가 버튼을 눌러 개별 카드로 정리하세요.</p>
     <div class="register__list-controls">
       <input name="visitorName" placeholder="예: 김내방" />
       <button type="button" class="button tertiary" data-action="add-visitor">추가</button>
@@ -68,12 +68,12 @@ function createCardSection() {
   const container = document.createElement("div");
   container.innerHTML = `
     <h3>출입카드 신청</h3>
+    <p class="helper-text">필요 시 체크 후 대표자와 연락처를 입력하세요. 미반납 시에도 해당 연락처로 안내됩니다.</p>
     <label class="inline-check">
       <input type="checkbox" name="cardRequested" id="cardRequested" />
-      <span>출입카드 신청</span>
+      <span>출입카드가 필요한 방문입니다.</span>
     </label>
-    <p class="helper-text">체크 시 대표자와 연락처를 입력하세요. 미반납 시 연락에 사용됩니다.</p>
-    <div class="register__grid" id="card-extra" hidden>
+    <div class="register__grid register__grid--card" id="card-extra" hidden>
       <label class="field">
         <span class="field__label">대표자 선택</span>
         <select name="cardRepresentative"></select>

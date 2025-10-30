@@ -1,74 +1,135 @@
 .register {
-  display: flex;
-  flex-direction: column;
+  display: grid;
   gap: 32px;
-  background: var(--surface);
-  border-radius: 28px;
-  padding: 32px 36px;
-  box-shadow: 0 28px 64px rgba(15, 40, 88, 0.08);
-  border: 1px solid rgba(30, 95, 255, 0.08);
+  background: radial-gradient(140% 140% at 20% 0%, rgba(62, 134, 255, 0.18), transparent 55%)
+      no-repeat,
+    var(--surface);
+  border-radius: 36px;
+  padding: 40px;
+  border: 1px solid rgba(30, 95, 255, 0.12);
+  box-shadow: 0 36px 90px rgba(11, 26, 58, 0.12);
+  position: relative;
+  overflow: hidden;
 }
 
-.register__header {
-  display: flex;
-  justify-content: space-between;
-  gap: 24px;
-  align-items: center;
+.register__hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 280px);
+  gap: 32px;
+  align-items: start;
+  position: relative;
 }
 
-.register__header .helper-text {
-  display: block;
-  margin-top: 8px;
+.register__hero::after {
+  content: "";
+  position: absolute;
+  inset: -70px 30% auto auto;
+  width: 220px;
+  height: 220px;
+  background: radial-gradient(circle, rgba(96, 128, 255, 0.18), transparent 65%);
+  filter: blur(0.4px);
+  pointer-events: none;
 }
 
-.register__content {
+.register__hero-text {
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  gap: 12px;
 }
 
 .register__eyebrow {
-  font-weight: 600;
-  color: var(--primary);
-  letter-spacing: 0.08em;
+  font-weight: 700;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
+  color: rgba(26, 82, 255, 0.8);
+  font-size: 13px;
 }
 
-.register__section {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+.register__hero h2 {
+  margin: 0;
+  font-size: 32px;
+  line-height: 1.2;
 }
 
-.register__section--two-column {
+.register__hero .helper-text {
+  max-width: 520px;
+}
+
+.register__hero-hints {
+  list-style: none;
+  margin: 0;
+  padding: 20px 22px;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(30, 95, 255, 0.1);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  font-size: 14px;
+  color: var(--muted-strong);
+}
+
+.register__hero-hints li::before {
+  content: "•";
+  color: var(--primary);
+  margin-right: 8px;
+  font-weight: 700;
+}
+
+.register__submit {
+  justify-self: end;
+  align-self: center;
+  min-width: 160px;
+}
+
+.register__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 340px);
+  gap: 28px;
+}
+
+.register__column {
+  display: grid;
   gap: 24px;
+  align-content: start;
 }
 
 .register__panel {
-  background: rgba(244, 247, 255, 0.72);
-  border-radius: 22px;
-  padding: 24px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 24px;
+  padding: 28px;
   border: 1px solid rgba(30, 95, 255, 0.12);
+  box-shadow: 0 18px 60px rgba(15, 40, 88, 0.12);
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 20px;
+  position: relative;
+}
+
+.register__panel header {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .register__panel h3 {
   margin: 0;
-  font-size: 18px;
+  font-size: 19px;
 }
 
 .register__grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 16px;
+  gap: 18px;
+}
+
+.register__grid--card {
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
 }
 
 .register__panel--list {
-  gap: 16px;
+  gap: 20px;
+  background: linear-gradient(135deg, rgba(55, 102, 255, 0.14), rgba(255, 255, 255, 0.92));
 }
 
 .register__list-controls {
@@ -82,44 +143,55 @@
 }
 
 .register__visitor-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  min-height: 40px;
+  display: grid;
+  grid-auto-rows: minmax(38px, auto);
+  gap: 12px;
 }
 
 .register__pill {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
-  border-radius: 999px;
-  background: rgba(30, 95, 255, 0.14);
-  color: var(--primary);
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: rgba(14, 47, 132, 0.12);
+  color: var(--muted-strong);
   font-weight: 600;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4);
 }
 
 .register__pill button {
-  background: none;
+  background: rgba(255, 255, 255, 0.4);
   border: none;
-  color: inherit;
+  color: var(--primary);
   cursor: pointer;
-  padding: 0;
-  font-size: 16px;
-  line-height: 1;
+  padding: 4px 8px;
+  border-radius: 10px;
+  font-size: 14px;
+  transition: background 0.2s ease;
+}
+
+.register__pill button:hover {
+  background: rgba(255, 255, 255, 0.8);
 }
 
 .register__list-empty {
-  padding: 16px;
-  border-radius: 14px;
-  background: rgba(30, 95, 255, 0.08);
+  padding: 18px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px dashed rgba(30, 95, 255, 0.4);
   color: var(--muted);
   font-size: 14px;
 }
 
 .register__panel--card {
-  background: rgba(255, 255, 255, 0.9);
-  gap: 16px;
+  gap: 18px;
+  background: linear-gradient(155deg, rgba(30, 95, 255, 0.18), rgba(255, 255, 255, 0.92));
+}
+
+.register__panel--card h3 {
+  color: var(--primary);
 }
 
 .register label.field textarea {
@@ -130,22 +202,50 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 14px;
-  border-radius: 14px;
-  background: rgba(30, 95, 255, 0.08);
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(30, 95, 255, 0.16);
 }
 
 .register .inline-check span {
   font-weight: 600;
 }
 
-@media (max-width: 768px) {
-  .register__header {
-    flex-direction: column;
-    align-items: flex-start;
+@media (max-width: 1024px) {
+  .register {
+    padding: 32px 28px;
+    border-radius: 28px;
   }
 
-  .register__header .button {
-    width: 100%;
+  .register__hero {
+    grid-template-columns: 1fr;
+  }
+
+  .register__hero-hints {
+    order: 3;
+  }
+
+  .register__submit {
+    justify-self: stretch;
+  }
+
+  .register__layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .register {
+    padding: 24px;
+    gap: 24px;
+  }
+
+  .register__panel {
+    padding: 22px;
+  }
+
+  .register__hero h2 {
+    font-size: 26px;
   }
 }
