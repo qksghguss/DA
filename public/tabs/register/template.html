@@ -3,19 +3,26 @@
     <div>
       <p class="register__eyebrow">내방객 등록</p>
       <h2>방문 예약 정보를 입력하세요</h2>
+      <span class="helper-text">방문 일정과 담당자를 구분하여 입력하면 현황 파악이 빨라집니다.</span>
     </div>
     <button type="submit" class="button">등록 완료</button>
   </header>
-  <section class="register__section">
-    <h3>기본 정보</h3>
-    <div class="register__grid" data-section="basic"></div>
-  </section>
-  <section class="register__section">
-    <h3>추가 정보</h3>
-    <div class="register__grid" data-section="details"></div>
-  </section>
-  <section class="register__section">
-    <h3>출입카드 신청</h3>
-    <div class="register__card" data-section="card"></div>
-  </section>
+  <div class="register__content">
+    <section class="register__section register__section--two-column">
+      <article class="register__panel" data-section="schedule">
+        <h3>방문 일정</h3>
+        <div class="register__grid"></div>
+      </article>
+      <article class="register__panel" data-section="onsite">
+        <h3>현장 담당 정보</h3>
+        <div class="register__grid"></div>
+      </article>
+    </section>
+    <section class="register__section">
+      <article class="register__panel register__panel--list" data-section="visitors"></article>
+    </section>
+    <section class="register__section">
+      <article class="register__panel register__panel--card" data-section="card"></article>
+    </section>
+  </div>
 </form>

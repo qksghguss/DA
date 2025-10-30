@@ -160,10 +160,20 @@ async function renderActiveTab() {
         return;
       }
       ensureStylesheets(LogsTab.styles);
-      const view = await LogsTab.renderLogs({ logs: state.logs });
+      const view = await LogsTab.renderLogs({ logs: state.logs, uiState });
       if (state.activeTab !== activeTab) return;
       mount.replaceChildren(view);
-      LogsTab.wireLogs?.({ root: view });
+      LogsTab.wireLogs?.({
+        root: view,
+        onActionFilterChange: (value) => {
+          uiState.logActionFilter = value;
+          renderApp();
+        },
+        onSearchChange: (value) => {
+          uiState.logSearchTerm = value;
+          renderApp();
+        },
+      });
       break;
     }
     case "settings": {
@@ -220,6 +230,8 @@ function handleVisitorUpdate({ id, visitStatus, exitTimeRaw, cardStatus, cardNum
 
   const previousVisitStatus = visitor.visitStatus;
   const previousCardStatus = visitor.cardStatus;
+  const previousExitTime = visitor.exitTimeRaw;
+  const previousCardNumber = visitor.cardNumber;
 
   let normalizedCardNumber = cardNumber;
 
@@ -255,11 +267,17 @@ function handleVisitorUpdate({ id, visitStatus, exitTimeRaw, cardStatus, cardNum
     return next;
   });
 
+  const updatedVisitor = state.visitors.find((item) => item.id === id);
+
   const changes = StatusTab.describeChange({
     previousVisitStatus,
-    nextVisitStatus: visitStatus,
+    nextVisitStatus: updatedVisitor?.visitStatus ?? visitStatus,
     previousCardStatus,
-    nextCardStatus: isAdmin ? cardStatus : previousCardStatus,
+    nextCardStatus: updatedVisitor?.cardStatus ?? previousCardStatus,
+    previousExitTime,
+    nextExitTime: updatedVisitor?.exitTimeRaw ?? exitTimeRaw,
+    previousCardNumber,
+    nextCardNumber: updatedVisitor?.cardNumber ?? previousCardNumber,
   });
 
   if (changes) {

@@ -21,6 +21,12 @@
   gap: 16px;
 }
 
+.logs__filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
 .logs__empty {
   padding: 40px;
   text-align: center;

@@ -1,8 +1,15 @@
 export function renderShell({ currentUser, activeTab, tabs, badges }) {
+  const formatter = new Intl.DateTimeFormat("ko-KR", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  });
+  const activeLabel = tabs.find((tab) => tab.key === activeTab)?.label ?? "";
+  const now = formatter.format(new Date());
+
   return `
     <div class="app-shell">
       <aside class="sidebar">
-        <div>
+        <div class="sidebar__brand">
           <h1>VISITOR HUB</h1>
           <p class="helper-text">${currentUser.process} · ${currentUser.role === "admin" ? "관리자" : "일반"}</p>
         </div>
@@ -19,16 +26,24 @@ export function renderShell({ currentUser, activeTab, tabs, badges }) {
             )
             .join("")}
         </nav>
-        <button class="button secondary" id="logout">로그아웃</button>
+        <div class="sidebar__footer">
+          <div class="user-chip">
+            <span>👤</span>
+            <div>
+              <strong>${currentUser.name}</strong>
+              <p>${currentUser.role === "admin" ? "관리자" : "일반"}</p>
+            </div>
+          </div>
+          <button class="button secondary" id="logout">로그아웃</button>
+        </div>
       </aside>
       <main>
         <div class="top-bar">
-          <h2>${tabs.find((tab) => tab.key === activeTab)?.label ?? ""}</h2>
-          <div class="user-chip">
-            <span>👤</span>
-            <span>${currentUser.name}</span>
-            <span class="badge">${currentUser.role === "admin" ? "관리자" : "일반"}</span>
+          <div>
+            <p class="top-bar__eyebrow">${currentUser.process}</p>
+            <h2>${activeLabel}</h2>
           </div>
+          <span class="top-bar__timestamp">${now}</span>
         </div>
         <div id="tab-root"></div>
       </main>

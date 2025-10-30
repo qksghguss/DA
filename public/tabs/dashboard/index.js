@@ -51,20 +51,33 @@ export async function renderDashboard({ visitors }) {
       ...upcoming.map((item) => {
         const card = document.createElement("article");
         card.className = "dashboard__upcoming-card";
+        const visitorPreview = item.visitors.slice(0, 2).join(", ");
         card.innerHTML = `
           <div>
-            <span class="field__label">방문일자</span>
-            <strong>${formatKoreanDate(item.visitDateRaw)}</strong>
-            <span class="helper-text">${formatKoreanTime(item.visitTimeRaw)}</span>
+            <span class="field__label">방문 일정</span>
+            <div class="dashboard__date-stack">
+              <strong>${formatKoreanDate(item.visitDateRaw)}</strong>
+              <span class="helper-text">${formatKoreanTime(item.visitTimeRaw)}</span>
+            </div>
           </div>
           <div>
-            <span class="field__label">방문 업체 / 인솔자</span>
+            <span class="field__label">방문 업체</span>
             <strong>${item.companyName}</strong>
-            <span class="helper-text">${item.escort}</span>
+            <span class="dashboard__subtext">외부 방문</span>
           </div>
           <div>
+            <span class="field__label">사내 인솔자</span>
+            <strong class="dashboard__escort">${item.escort}</strong>
+            <span class="dashboard__subtext">사내 담당</span>
+          </div>
+          <div>
+            <span class="field__label">방문자</span>
+            <strong>${item.visitors.length}명</strong>
+            <span class="helper-text">${visitorPreview || "등록된 명단 확인"}</span>
+          </div>
+          <div class="dashboard__purpose-block">
             <span class="field__label">방문 목적</span>
-            <strong>${item.purpose}</strong>
+            <p>${item.purpose}</p>
           </div>
           <div>
             <span class="field__label">등록자</span>

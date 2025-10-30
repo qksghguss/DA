@@ -8,27 +8,28 @@ export async function renderRegister() {
   const html = await loadTemplate(new URL("./template.html", import.meta.url));
   const view = instantiateTemplate(html);
 
-  const basicRegion = view.querySelector('[data-section="basic"]');
-  const detailRegion = view.querySelector('[data-section="details"]');
+  const scheduleRegion = view.querySelector('[data-section="schedule"] .register__grid');
+  const onsiteRegion = view.querySelector('[data-section="onsite"] .register__grid');
+  const visitorsRegion = view.querySelector('[data-section="visitors"]');
   const cardRegion = view.querySelector('[data-section="card"]');
 
-  const basicFields = [
+  const scheduleFields = [
     { name: "company", label: "방문 업체명", placeholder: "예: OO엔지니어링", required: true },
     { name: "date", label: "방문 일자", placeholder: "예: 20250404", helper: "8자리 숫자 입력 시 자동 변환", required: true },
-    { name: "time", label: "방문 일시", placeholder: "예: 1750", helper: "24시간제로 숫자만 입력", required: true },
+    { name: "time", label: "방문 시간", placeholder: "예: 1750", helper: "24시간제로 숫자만 입력", required: true },
     { name: "location", label: "방문 장소", placeholder: "예: 본관 3층 회의실", required: true },
   ];
 
-  const detailFields = [
+  const onsiteFields = [
+    { name: "escort", label: "사내 인솔자", placeholder: "예: 홍길동 차장", helper: "현장 담당자 이름", required: true },
     { name: "equipment", label: "점검 설비 & 세부 위치", placeholder: "예: 공조 설비 - 기계실 A" },
-    { name: "escort", label: "인솔자", placeholder: "예: 홍길동 차장", required: true },
-    { name: "visitors", label: "방문자 명단", placeholder: "한 줄에 한 명씩 입력", type: "textarea", required: true },
-    { name: "purpose", label: "방문 목적", placeholder: "예: 정기 점검 및 기술 회의", type: "textarea", required: true },
-    { name: "exitTime", label: "퇴장 일시", placeholder: "예: 2100", helper: "퇴장 시점에 입력 가능 (선택)" },
+    { name: "purpose", label: "방문 목적", placeholder: "예: 정기 점검 및 기술 회의", type: "textarea", rows: 4, required: true },
+    { name: "exitTime", label: "예상 퇴장 시간", placeholder: "예: 2100", helper: "퇴장 시점에 입력 가능 (선택)" },
   ];
 
-  basicRegion.replaceChildren(...basicFields.map(createField));
-  detailRegion.replaceChildren(...detailFields.map(createField));
+  scheduleRegion.replaceChildren(...scheduleFields.map(createField));
+  onsiteRegion.replaceChildren(...onsiteFields.map(createField));
+  visitorsRegion.replaceChildren(createVisitorsSection());
   cardRegion.replaceChildren(createCardSection());
 
   return view;
@@ -40,17 +41,33 @@ function createField(field) {
   wrapper.innerHTML = `
     <span class="field__label">${field.label}</span>
     ${field.type === "textarea"
-      ? `<textarea name="${field.name}" ${field.required ? "required" : ""} placeholder="${field.placeholder ?? ""}"></textarea>`
+      ? `<textarea name="${field.name}" ${field.required ? "required" : ""} placeholder="${field.placeholder ?? ""}" ${field.rows ? `rows="${field.rows}"` : ""}></textarea>`
       : `<input name="${field.name}" ${field.required ? "required" : ""} placeholder="${field.placeholder ?? ""}" />`}
     ${field.helper ? `<span class="helper-text">${field.helper}</span>` : ""}
   `;
   return wrapper;
 }
 
+function createVisitorsSection() {
+  const container = document.createElement("div");
+  container.innerHTML = `
+    <h3>방문자 명단</h3>
+    <p class="helper-text">이름을 입력하고 추가 버튼을 눌러 명단을 완성하세요.</p>
+    <div class="register__list-controls">
+      <input name="visitorName" placeholder="예: 김내방" />
+      <button type="button" class="button tertiary" data-action="add-visitor">추가</button>
+    </div>
+    <div class="register__visitor-list" data-role="visitor-list">
+      <div class="register__list-empty">등록된 방문자가 없습니다.</div>
+    </div>
+  `;
+  return container;
+}
+
 function createCardSection() {
   const container = document.createElement("div");
-  container.className = "register__card-inner";
   container.innerHTML = `
+    <h3>출입카드 신청</h3>
     <label class="inline-check">
       <input type="checkbox" name="cardRequested" id="cardRequested" />
       <span>출입카드 신청</span>
@@ -77,13 +94,61 @@ export function wireRegister({ root, currentUser, onSubmit }) {
   const cardToggle = form.querySelector("input[name=cardRequested]");
   const cardExtra = form.querySelector("#card-extra");
   const cardSelect = form.querySelector("select[name=cardRepresentative]");
+  const visitorInput = form.querySelector("input[name=visitorName]");
+  const addVisitorBtn = form.querySelector('[data-action="add-visitor"]');
+  const visitorList = form.querySelector('[data-role="visitor-list"]');
+
+  let visitorNames = [];
+
+  const renderVisitorList = () => {
+    visitorList.innerHTML = "";
+    if (visitorNames.length === 0) {
+      const empty = document.createElement("div");
+      empty.className = "register__list-empty";
+      empty.textContent = "등록된 방문자가 없습니다.";
+      visitorList.appendChild(empty);
+      return;
+    }
+
+    visitorNames.forEach((name, index) => {
+      const pill = document.createElement("span");
+      pill.className = "register__pill";
+      pill.innerHTML = `
+        ${name}
+        <button type="button" aria-label="${name} 삭제" data-index="${index}">×</button>
+      `;
+      pill.querySelector("button")?.addEventListener("click", () => {
+        visitorNames = visitorNames.filter((_, i) => i !== index);
+        renderVisitorList();
+        populateRepresentativeOptions();
+      });
+      visitorList.appendChild(pill);
+    });
+  };
 
   const populateRepresentativeOptions = () => {
-    const names = form.visitors.value
-      .split(/\n|,/)
-      .map((name) => name.trim())
-      .filter(Boolean);
-    cardSelect.innerHTML = names.map((name) => `<option value="${name}">${name}</option>`).join("");
+    if (!visitorNames.length) {
+      cardSelect.innerHTML = "<option value=\"\">등록된 방문자가 없습니다</option>";
+      cardSelect.value = "";
+      return;
+    }
+    cardSelect.innerHTML = [
+      '<option value="">대표자를 선택하세요</option>',
+      ...visitorNames.map((name) => `<option value="${name}">${name}</option>`),
+    ].join("");
+  };
+
+  const addVisitor = () => {
+    const value = visitorInput.value.trim();
+    if (!value) return;
+    if (visitorNames.includes(value)) {
+      alert("이미 추가된 방문자입니다.");
+      return;
+    }
+    visitorNames = [...visitorNames, value];
+    visitorInput.value = "";
+    renderVisitorList();
+    populateRepresentativeOptions();
   };
 
   cardToggle.addEventListener("change", () => {
@@ -93,15 +158,23 @@ export function wireRegister({ root, currentUser, onSubmit }) {
     }
   });
 
-  form.visitors.addEventListener("input", () => {
-    if (cardToggle.checked) {
-      populateRepresentativeOptions();
+  addVisitorBtn.addEventListener("click", addVisitor);
+  visitorInput.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      addVisitor();
     }
   });
 
   form.addEventListener("submit", (event) => {
     event.preventDefault();
     const data = new FormData(form);
+
+    if (visitorNames.length === 0) {
+      alert("방문자 명단을 한 명 이상 추가해주세요.");
+      return;
+    }
+
     const visitor = {
       id: generateId(),
       companyName: data.get("company").trim(),
@@ -109,11 +182,7 @@ export function wireRegister({ root, currentUser, onSubmit }) {
       visitTimeRaw: data.get("time").trim(),
       visitDateFormatted: formatKoreanDate(data.get("date").trim()),
       visitTimeFormatted: formatKoreanTime(data.get("time").trim()),
-      visitors: data
-        .get("visitors")
-        .split(/\n|,/)
-        .map((name) => name.trim())
-        .filter(Boolean),
+      visitors: visitorNames,
       location: data.get("location").trim(),
       equipment: data.get("equipment").trim(),
       escort: data.get("escort").trim(),
@@ -133,6 +202,10 @@ export function wireRegister({ root, currentUser, onSubmit }) {
     onSubmit(visitor);
     form.reset();
     cardExtra.hidden = true;
-    cardSelect.innerHTML = "";
+    visitorNames = [];
+    renderVisitorList();
+    populateRepresentativeOptions();
   });
+
+  renderVisitorList();
 }

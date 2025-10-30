@@ -84,16 +84,43 @@
 
 .dashboard__upcoming-card {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 12px 24px;
-  padding: 18px 20px;
-  border-radius: 16px;
-  background: rgba(244, 247, 255, 0.64);
-  border: 1px solid rgba(30, 95, 255, 0.1);
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px 24px;
+  padding: 22px 24px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, rgba(244, 247, 255, 0.85), rgba(231, 239, 255, 0.7));
+  border: 1px solid rgba(30, 95, 255, 0.14);
 }
 
 .dashboard__upcoming-card strong {
   font-size: 15px;
+}
+
+.dashboard__date-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dashboard__subtext {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.dashboard__escort {
+  color: var(--primary);
+}
+
+.dashboard__purpose-block {
+  grid-column: 1 / -1;
+  padding: 14px 16px;
+  background: rgba(30, 95, 255, 0.08);
+  border-radius: 14px;
+}
+
+.dashboard__purpose-block p {
+  margin: 8px 0 0;
+  font-weight: 600;
 }
 
 .dashboard__empty {

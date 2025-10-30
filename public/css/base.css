@@ -72,6 +72,17 @@ a {
   border: 1px solid var(--border);
 }
 
+.button.tertiary {
+  background: transparent;
+  color: var(--primary);
+  border: 1px dashed rgba(30, 95, 255, 0.4);
+}
+
+.button.tertiary:hover:not(:disabled) {
+  box-shadow: none;
+  border-color: var(--primary);
+}
+
 .button:disabled {
   opacity: 0.6;
   cursor: not-allowed;

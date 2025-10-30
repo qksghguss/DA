@@ -1,6 +1,6 @@
 import { CARD_STATUSES, VISIT_STATUSES } from "../../js/constants.js";
 import { toCardLabel, toVisitLabel } from "../../js/state/store.js";
-import { formatDateTime } from "../../js/utils/formatters.js";
+import { formatDateTime, formatKoreanDate, formatKoreanTime } from "../../js/utils/formatters.js";
 import { loadTemplate, instantiateTemplate } from "../../js/utils/templates.js";
 
 export const styles = ["tabs/status/status.css"];
@@ -100,84 +100,89 @@ function createVisitorCard(item, currentUser) {
   const canEdit = currentUser.role === "admin" || item.createdBy.id === currentUser.id;
   const canManageCard = currentUser.role === "admin";
   const canDelete = currentUser.role === "admin" || item.createdBy.id === currentUser.id;
+  const prettyDate = formatKoreanDate(item.visitDateRaw) || formatDateTime(item.visitDateRaw, item.visitTimeRaw);
+  const prettyTime = formatKoreanTime(item.visitTimeRaw);
 
   const article = document.createElement("article");
   article.className = "visitor-card";
   article.dataset.id = item.id;
   article.innerHTML = `
-    <header class="visitor-card__header">
-      <div>
-        <h4>${item.companyName}</h4>
-        <div class="visitor-card__meta">
-          <span>${item.visitors.join(", ")}</span>
-          <span>${formatDateTime(item.visitDateRaw, item.visitTimeRaw)}</span>
-        </div>
+    <div class="visitor-card__aside">
+      <div class="visitor-card__schedule">
+        <span class="field__label">방문 일정</span>
+        <strong>${prettyDate}</strong>
+        <span class="helper-text">${prettyTime || formatDateTime(item.visitDateRaw, item.visitTimeRaw)}</span>
       </div>
-      <div class="visitor-card__tags">
-        ${renderStatusTag(item.visitStatus)}
-        ${renderCardTag(item.cardStatus)}
+      <div class="visitor-card__control-group">
+        <label class="field">
+          <span class="field__label">방문 상태</span>
+          <select name="visitStatus" ${canEdit ? "" : "disabled"}>
+            ${VISIT_STATUSES.map(
+              (status) => `<option value="${status.value}" ${status.value === item.visitStatus ? "selected" : ""}>${status.label}</option>`
+            ).join("")}
+          </select>
+        </label>
+        <label class="field">
+          <span class="field__label">퇴장 일시</span>
+          <input name="exitTime" value="${item.exitTimeRaw ?? ""}" ${canEdit ? "" : "disabled"} placeholder="예: 2100" />
+        </label>
+        <label class="field">
+          <span class="field__label">카드 상태</span>
+          <select name="cardStatus" ${canManageCard ? "" : "disabled"}>
+            ${CARD_STATUSES.map(
+              (status) => `<option value="${status.value}" ${status.value === item.cardStatus ? "selected" : ""}>${status.label}</option>`
+            ).join("")}
+          </select>
+        </label>
+        <label class="field">
+          <span class="field__label">카드 번호 (뒤 4자리)</span>
+          <input name="cardNumber" value="${item.cardNumber ?? ""}" ${canManageCard ? "" : "disabled"} placeholder="예: 1234" />
+        </label>
       </div>
-    </header>
-    <div class="visitor-card__grid">
-      <label class="field">
-        <span class="field__label">방문 상태</span>
-        <select name="visitStatus" ${canEdit ? "" : "disabled"}>
-          ${VISIT_STATUSES.map(
-            (status) => `<option value="${status.value}" ${status.value === item.visitStatus ? "selected" : ""}>${status.label}</option>`
-          ).join("")}
-        </select>
-      </label>
-      <label class="field">
-        <span class="field__label">퇴장 일시</span>
-        <input name="exitTime" value="${item.exitTimeRaw ?? ""}" ${canEdit ? "" : "disabled"} placeholder="예: 2100" />
-      </label>
-      <label class="field">
-        <span class="field__label">카드 상태</span>
-        <select name="cardStatus" ${canManageCard ? "" : "disabled"}>
-          ${CARD_STATUSES.map(
-            (status) => `<option value="${status.value}" ${status.value === item.cardStatus ? "selected" : ""}>${status.label}</option>`
-          ).join("")}
-        </select>
-      </label>
-      <label class="field">
-        <span class="field__label">카드 번호 (뒤 4자리)</span>
-        <input name="cardNumber" value="${item.cardNumber ?? ""}" ${canManageCard ? "" : "disabled"} placeholder="예: 1234" />
-      </label>
-    </div>
-    <dl class="visitor-card__details">
-      <div>
-        <dt>인솔자</dt>
-        <dd>${item.escort}</dd>
-      </div>
-      <div>
-        <dt>방문 목적</dt>
-        <dd>${item.purpose}</dd>
-      </div>
-      <div>
-        <dt>점검 설비</dt>
-        <dd>${item.equipment || "-"}</dd>
-      </div>
-      <div>
-        <dt>방문 위치</dt>
-        <dd>${item.location}</dd>
-      </div>
-      ${
-        item.cardRequested
-          ? `<div><dt>카드 대표자</dt><dd>${item.cardRepresentative ?? "-"} · ${item.cardContact ?? "연락처 미입력"}</dd></div>`
-          : ""
-      }
-    </dl>
-    <footer class="visitor-card__footer">
-      <div>
-        <small>등록자 ${item.createdBy.name}</small>
-        <br />
-        <small>최근 퇴장 입력 ${item.exitTimeFormatted || "-"}</small>
-      </div>
-      <div class="visitor-card__actions">
+      <div class="visitor-card__aside-actions">
         <button class="button" data-action="save" ${canEdit ? "" : "disabled"}>저장</button>
         <button class="button secondary" data-action="delete" ${canDelete ? "" : "disabled"}>삭제</button>
       </div>
-    </footer>
+    </div>
+    <div class="visitor-card__content">
+      <header class="visitor-card__header">
+        <div>
+          <h4>${item.companyName}</h4>
+          <span class="visitor-card__escort">${item.escort} · 사내 담당</span>
+        </div>
+        <div class="visitor-card__tags">
+          ${renderStatusTag(item.visitStatus)}
+          ${renderCardTag(item.cardStatus)}
+        </div>
+      </header>
+      <dl class="visitor-card__info">
+        <div>
+          <dt>방문자 명단</dt>
+          <dd>${item.visitors.join(", ")}</dd>
+        </div>
+        <div>
+          <dt>방문 위치</dt>
+          <dd>${item.location}</dd>
+        </div>
+        <div>
+          <dt>점검 설비</dt>
+          <dd>${item.equipment || "-"}</dd>
+        </div>
+        ${
+          item.cardRequested
+            ? `<div><dt>카드 대표자</dt><dd>${item.cardRepresentative ?? "-"} · ${item.cardContact ?? "연락처 미입력"}</dd></div>`
+            : ""
+        }
+      </dl>
+      <section class="visitor-card__purpose">
+        <h5>방문 목적</h5>
+        <p>${item.purpose}</p>
+      </section>
+      <footer class="visitor-card__footer">
+        <span>등록자 ${item.createdBy.name}</span>
+        <span>최근 퇴장 입력 ${item.exitTimeFormatted || "-"}</span>
+      </footer>
+    </div>
   `;
 
   return article;
@@ -267,13 +272,32 @@ export function buildStatusSummary({ visitors }) {
   };
 }
 
-export function describeChange({ previousVisitStatus, nextVisitStatus, previousCardStatus, nextCardStatus }) {
+export function describeChange({
+  previousVisitStatus,
+  nextVisitStatus,
+  previousCardStatus,
+  nextCardStatus,
+  previousExitTime,
+  nextExitTime,
+  previousCardNumber,
+  nextCardNumber,
+}) {
   const changes = [];
   if (previousVisitStatus !== nextVisitStatus) {
     changes.push(`방문 상태를 ${toVisitLabel(previousVisitStatus)} → ${toVisitLabel(nextVisitStatus)}`);
   }
   if (previousCardStatus !== nextCardStatus) {
     changes.push(`카드 상태를 ${toCardLabel(previousCardStatus)} → ${toCardLabel(nextCardStatus)}`);
+  }
+  if (previousExitTime !== nextExitTime) {
+    const before = previousExitTime ? formatKoreanTime(previousExitTime) : "미입력";
+    const after = nextExitTime ? formatKoreanTime(nextExitTime) : "미입력";
+    changes.push(`퇴장 일시를 ${before} → ${after}`);
+  }
+  if (previousCardNumber !== nextCardNumber) {
+    const before = previousCardNumber ? `****${previousCardNumber}` : "미입력";
+    const after = nextCardNumber ? `****${nextCardNumber}` : "미입력";
+    changes.push(`카드 번호를 ${before} → ${after}`);
   }
   return changes.join(", ");
 }

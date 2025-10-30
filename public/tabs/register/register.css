@@ -4,7 +4,7 @@
   gap: 32px;
   background: var(--surface);
   border-radius: 28px;
-  padding: 32px;
+  padding: 32px 36px;
   box-shadow: 0 28px 64px rgba(15, 40, 88, 0.08);
   border: 1px solid rgba(30, 95, 255, 0.08);
 }
@@ -14,6 +14,17 @@
   justify-content: space-between;
   gap: 24px;
   align-items: center;
+}
+
+.register__header .helper-text {
+  display: block;
+  margin-top: 8px;
+}
+
+.register__content {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
 }
 
 .register__eyebrow {
@@ -26,10 +37,26 @@
 .register__section {
   display: flex;
   flex-direction: column;
+  gap: 20px;
+}
+
+.register__section--two-column {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 24px;
+}
+
+.register__panel {
+  background: rgba(244, 247, 255, 0.72);
+  border-radius: 22px;
+  padding: 24px;
+  border: 1px solid rgba(30, 95, 255, 0.12);
+  display: flex;
+  flex-direction: column;
   gap: 18px;
 }
 
-.register__section h3 {
+.register__panel h3 {
   margin: 0;
   font-size: 18px;
 }
@@ -37,26 +64,66 @@
 .register__grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 18px;
+  gap: 16px;
 }
 
-.register__card {
-  display: grid;
-  gap: 18px;
-  background: rgba(244, 247, 255, 0.6);
-  border-radius: 20px;
-  padding: 24px;
-  border: 1px dashed rgba(30, 95, 255, 0.24);
+.register__panel--list {
+  gap: 16px;
 }
 
-.register__card-inner {
+.register__list-controls {
   display: flex;
-  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+
+.register__list-controls input {
+  flex: 1;
+}
+
+.register__visitor-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  min-height: 40px;
+}
+
+.register__pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(30, 95, 255, 0.14);
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.register__pill button {
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  padding: 0;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.register__list-empty {
+  padding: 16px;
+  border-radius: 14px;
+  background: rgba(30, 95, 255, 0.08);
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.register__panel--card {
+  background: rgba(255, 255, 255, 0.9);
   gap: 16px;
 }
 
 .register label.field textarea {
-  min-height: 140px;
+  min-height: 120px;
 }
 
 .register .inline-check {

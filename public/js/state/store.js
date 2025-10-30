@@ -14,6 +14,8 @@ export const uiState = {
   statusFilter: "all",
   cardFilter: "all",
   searchTerm: "",
+  logActionFilter: "all",
+  logSearchTerm: "",
 };
 
 export function hydrateState() {
@@ -96,6 +98,11 @@ export function getAvailableTabs() {
 export function resetSession() {
   state.currentUser = null;
   state.activeTab = "dashboard";
+  uiState.statusFilter = "all";
+  uiState.cardFilter = "all";
+  uiState.searchTerm = "";
+  uiState.logActionFilter = "all";
+  uiState.logSearchTerm = "";
 }
 
 export function toVisitLabel(value) {
