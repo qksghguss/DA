@@ -45,7 +45,7 @@ export async function renderStatus({ visitors, uiState, currentUser }) {
 
   if (filteredVisitors.length === 0) {
     const empty = document.createElement("div");
-    empty.className = "status__empty";
+    empty.className = "visitor-status__empty";
     empty.textContent = "검색 조건에 맞는 내방객 내역이 없습니다.";
     listRegion.replaceChildren(empty);
   } else {
@@ -81,7 +81,7 @@ function populateOptions(select, items, selectedValue, labelAll) {
 
 function createSummaryCard(title, items) {
   const card = document.createElement("article");
-  card.className = "status__summary-card";
+  card.className = "summary-card";
   card.innerHTML = `
     <span>${title}</span>
     <strong>${items.reduce((acc, item) => acc + item.value, 0)} 건</strong>
@@ -104,26 +104,26 @@ function createVisitorCard(item, currentUser) {
   const prettyTime = formatKoreanTime(item.visitTimeRaw) || formatDateTime(item.visitDateRaw, item.visitTimeRaw);
 
   const article = document.createElement("article");
-  article.className = "visitor-card";
+  article.className = "status-ticket";
   article.dataset.id = item.id;
   article.innerHTML = `
-    <header class="visitor-card__hero">
-      <div class="visitor-card__company">
-        <div class="visitor-card__schedule">
+    <header class="status-ticket__header">
+      <div class="status-ticket__title">
+        <div class="status-ticket__schedule">
           <span class="field__label">방문 일정</span>
           <strong>${prettyDate}</strong>
-          <span class="helper-text">${prettyTime}</span>
+          <span>${prettyTime}</span>
         </div>
         <h4>${item.companyName}</h4>
-        <span class="visitor-card__escort">${item.escort} · 사내 담당</span>
+        <span class="status-ticket__meta">${item.escort} · 사내 담당</span>
       </div>
-      <div class="visitor-card__chips">
+      <div class="status-ticket__badges">
         ${renderStatusTag(item.visitStatus)}
         ${renderCardTag(item.cardStatus)}
       </div>
     </header>
-    <div class="visitor-card__body">
-      <dl class="visitor-card__info">
+    <div class="status-ticket__body">
+      <dl class="status-ticket__details">
         <div>
           <dt>방문자 명단</dt>
           <dd>${item.visitors.join(", ")}</dd>
@@ -142,13 +142,13 @@ function createVisitorCard(item, currentUser) {
             : ""
         }
       </dl>
-      <section class="visitor-card__purpose">
+      <section class="status-ticket__purpose">
         <h5>방문 목적</h5>
         <p>${item.purpose}</p>
       </section>
     </div>
-    <div class="visitor-card__controls">
-      <div class="visitor-card__control-grid">
+    <section class="status-ticket__controls">
+      <div class="status-ticket__control-grid">
         <label class="field">
           <span class="field__label">방문 상태</span>
           <select name="visitStatus" ${canEdit ? "" : "disabled"}>
@@ -174,15 +174,15 @@ function createVisitorCard(item, currentUser) {
           <input name="cardNumber" value="${item.cardNumber ?? ""}" ${canManageCard ? "" : "disabled"} placeholder="예: 1234" />
         </label>
       </div>
-      <div class="visitor-card__actions">
+      <div class="status-ticket__buttons">
         <button class="button" data-action="save" ${canEdit ? "" : "disabled"}>저장</button>
         <button class="button secondary" data-action="delete" ${canDelete ? "" : "disabled"}>삭제</button>
       </div>
-      <footer class="visitor-card__footer">
+      <div class="status-ticket__footnote">
         <span>등록자 ${item.createdBy.name}</span>
         <span>최근 퇴장 입력 ${item.exitTimeFormatted || "-"}</span>
-      </footer>
-    </div>
+      </div>
+    </section>
   `;
 
   return article;
@@ -191,13 +191,13 @@ function createVisitorCard(item, currentUser) {
 function renderStatusTag(value) {
   switch (value) {
     case "planned":
-      return '<span class="chip chip--planned">방문 예정</span>';
+      return '<span class="badge badge--planned">방문 예정</span>';
     case "cancelled":
-      return '<span class="chip chip--cancelled">방문 취소</span>';
+      return '<span class="badge badge--cancelled">방문 취소</span>';
     case "checked_in":
-      return '<span class="chip chip--progress">방문 완료</span>';
+      return '<span class="badge badge--progress">방문 완료</span>';
     case "checked_out":
-      return '<span class="chip chip--done">퇴장 완료</span>';
+      return '<span class="badge badge--done">퇴장 완료</span>';
     default:
       return "";
   }
@@ -206,15 +206,15 @@ function renderStatusTag(value) {
 function renderCardTag(value) {
   switch (value) {
     case "not_requested":
-      return '<span class="chip">미신청</span>';
+      return '<span class="badge">미신청</span>';
     case "pending":
-      return '<span class="chip chip--pending">지급 예정</span>';
+      return '<span class="badge badge--pending">지급 예정</span>';
     case "issued":
-      return '<span class="chip chip--issued">지급 완료</span>';
+      return '<span class="badge badge--issued">지급 완료</span>';
     case "returned":
-      return '<span class="chip chip--returned">반납 완료</span>';
+      return '<span class="badge badge--returned">반납 완료</span>';
     case "missing":
-      return '<span class="chip chip--alert">미반납</span>';
+      return '<span class="badge badge--alert">미반납</span>';
     default:
       return "";
   }
@@ -237,7 +237,7 @@ export function wireStatus({ root, onSearchChange, onStatusFilterChange, onCardF
     onCardFilterChange(event.target.value);
   });
 
-  root.querySelectorAll(".visitor-card").forEach((card) => {
+  root.querySelectorAll(".status-ticket").forEach((card) => {
     const id = card.dataset.id;
     const saveBtn = card.querySelector('[data-action="save"]');
     const deleteBtn = card.querySelector('[data-action="delete"]');

@@ -8,9 +8,8 @@ export async function renderRegister() {
   const html = await loadTemplate(new URL("./template.html", import.meta.url));
   const view = instantiateTemplate(html);
 
-  const scheduleRegion = view.querySelector('[data-section="schedule"] .register__grid');
-  const onsiteRegion = view.querySelector('[data-section="onsite"] .register__grid');
-  const visitorsRegion = view.querySelector('[data-section="visitors"]');
+  const scheduleRegion = view.querySelector('[data-region="schedule-fields"]');
+  const onsiteRegion = view.querySelector('[data-region="onsite-fields"]');
   const cardRegion = view.querySelector('[data-section="card"]');
 
   const scheduleFields = [
@@ -29,7 +28,6 @@ export async function renderRegister() {
 
   scheduleRegion.replaceChildren(...scheduleFields.map(createField));
   onsiteRegion.replaceChildren(...onsiteFields.map(createField));
-  visitorsRegion.replaceChildren(createVisitorsSection());
   cardRegion.replaceChildren(createCardSection());
 
   return view;
@@ -48,32 +46,17 @@ function createField(field) {
   return wrapper;
 }
 
-function createVisitorsSection() {
-  const container = document.createElement("div");
-  container.innerHTML = `
-    <h3>방문자 명단</h3>
-    <p class="helper-text">내방객 이름을 입력한 뒤 추가 버튼을 눌러 개별 카드로 정리하세요.</p>
-    <div class="register__list-controls">
-      <input name="visitorName" placeholder="예: 김내방" />
-      <button type="button" class="button tertiary" data-action="add-visitor">추가</button>
-    </div>
-    <div class="register__visitor-list" data-role="visitor-list">
-      <div class="register__list-empty">등록된 방문자가 없습니다.</div>
-    </div>
-  `;
-  return container;
-}
-
 function createCardSection() {
   const container = document.createElement("div");
+  container.className = "visitor-register__card";
   container.innerHTML = `
-    <h3>출입카드 신청</h3>
-    <p class="helper-text">필요 시 체크 후 대표자와 연락처를 입력하세요. 미반납 시에도 해당 연락처로 안내됩니다.</p>
-    <label class="inline-check">
+    <h4>출입카드 신청</h4>
+    <p class="helper-text">필요한 방문만 체크하고 대표자 정보를 입력하세요. 미반납 시 해당 연락처로 안내됩니다.</p>
+    <label class="inline-check visitor-register__card-toggle">
       <input type="checkbox" name="cardRequested" id="cardRequested" />
-      <span>출입카드가 필요한 방문입니다.</span>
+      <span>출입카드를 신청합니다.</span>
     </label>
-    <div class="register__grid register__grid--card" id="card-extra" hidden>
+    <div class="form-grid visitor-register__card-extra" data-role="card-extra" hidden>
       <label class="field">
         <span class="field__label">대표자 선택</span>
         <select name="cardRepresentative"></select>
@@ -92,11 +75,15 @@ export function wireRegister({ root, currentUser, onSubmit }) {
   if (!form) return;
 
   const cardToggle = form.querySelector("input[name=cardRequested]");
-  const cardExtra = form.querySelector("#card-extra");
+  const cardExtra = form.querySelector('[data-role="card-extra"]');
   const cardSelect = form.querySelector("select[name=cardRepresentative]");
   const visitorInput = form.querySelector("input[name=visitorName]");
   const addVisitorBtn = form.querySelector('[data-action="add-visitor"]');
   const visitorList = form.querySelector('[data-role="visitor-list"]');
+
+  if (!cardToggle || !cardExtra || !cardSelect || !visitorInput || !addVisitorBtn || !visitorList) {
+    return;
+  }
 
   let visitorNames = [];
 
@@ -104,7 +91,7 @@ export function wireRegister({ root, currentUser, onSubmit }) {
     visitorList.innerHTML = "";
     if (visitorNames.length === 0) {
       const empty = document.createElement("div");
-      empty.className = "register__list-empty";
+      empty.className = "visitor-register__list-empty";
       empty.textContent = "등록된 방문자가 없습니다.";
       visitorList.appendChild(empty);
       return;
@@ -112,7 +99,7 @@ export function wireRegister({ root, currentUser, onSubmit }) {
 
     visitorNames.forEach((name, index) => {
       const pill = document.createElement("span");
-      pill.className = "register__pill";
+      pill.className = "visitor-register__pill";
       pill.innerHTML = `
         ${name}
         <button type="button" aria-label="${name} 삭제" data-index="${index}">×</button>

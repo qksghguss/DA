@@ -1,25 +1,36 @@
-<section class="status">
-  <header class="status__header">
-    <div>
-      <p class="status__eyebrow">내방객 현황</p>
-      <h2>실시간 방문과 카드 처리를 한 화면에서 확인하세요</h2>
-      <span class="helper-text"
-        >요약 카드로 흐름을 파악하고, 오른쪽 목록에서 상세 내역을 관리하세요.</span
-      >
+<section class="visitor-status">
+  <header class="visitor-status__hero">
+    <div class="visitor-status__hero-copy">
+      <p class="visitor-status__eyebrow">Status Control Center</p>
+      <h1>내방객 동선과 카드 업무를 한눈에 파악하세요</h1>
+      <p>
+        방문 접수부터 카드 반납까지 필요한 흐름을 요약 보드와 작업 공간으로 나누어 보여드립니다.
+        필요한 항목을 빠르게 찾아 업데이트하세요.
+      </p>
+    </div>
+    <div class="visitor-status__hero-panel">
+      <h2>오늘의 체크포인트</h2>
+      <ul>
+        <li><strong>퇴장 미기록</strong><span>4건</span></li>
+        <li><strong>카드 미반납</strong><span>1건</span></li>
+        <li><strong>진행 중 방문</strong><span>5건</span></li>
+      </ul>
     </div>
   </header>
-  <div class="status__body">
-    <aside class="status__sidebar">
-      <h3>요약</h3>
-      <div class="status__summary" data-region="summary"></div>
-    </aside>
-    <div class="status__workspace">
-      <div class="status__toolbar">
-        <label class="field status__search">
-          <span class="field__label">검색</span>
-          <input id="status-search" type="search" placeholder="업체명, 방문자, 목적 검색" />
-        </label>
-        <div class="status__filters">
+  <div class="visitor-status__content">
+    <section class="visitor-status__summary">
+      <h3>요약 보드</h3>
+      <div class="visitor-status__summary-grid" data-region="summary"></div>
+    </section>
+    <section class="visitor-status__workspace">
+      <header class="visitor-status__toolbar">
+        <div class="visitor-status__search">
+          <label class="field">
+            <span class="field__label">검색</span>
+            <input id="status-search" type="search" placeholder="업체명, 방문자, 목적 검색" />
+          </label>
+        </div>
+        <div class="visitor-status__filters">
           <label class="field">
             <span class="field__label">방문 상태</span>
             <select id="status-filter"></select>
@@ -29,8 +40,8 @@
             <select id="card-filter"></select>
           </label>
         </div>
-      </div>
-      <div class="status__list" data-region="list"></div>
-    </div>
+      </header>
+      <div class="visitor-status__list" data-region="list"></div>
+    </section>
   </div>
 </section>
