@@ -1,3 +1,5 @@
+const STORAGE_KEY = "visitor-app-state-v1";
+
 const VISIT_STATUSES = [
   { value: "planned", label: "방문 예정" },
   { value: "cancelled", label: "방문 취소" },
@@ -13,32 +15,59 @@ const CARD_STATUSES = [
   { value: "missing", label: "미반납" },
 ];
 
+const DEFAULT_USERS = [
+  {
+    id: "admin",
+    name: "총괄 관리자",
+    password: "admin123",
+    role: "admin",
+    process: "안전관리",
+  },
+  {
+    id: "guest",
+    name: "일반 담당자",
+    password: "guest123",
+    role: "user",
+    process: "공정 A",
+  },
+];
+
+const storageAvailable = (() => {
+  try {
+    if (typeof window === "undefined" || typeof window.localStorage === "undefined") {
+      return false;
+    }
+    const testKey = "__visitor_app_test__";
+    window.localStorage.setItem(testKey, "ok");
+    window.localStorage.removeItem(testKey);
+    return true;
+  } catch (error) {
+    console.warn("로컬 스토리지에 접근할 수 없습니다.", error);
+    return false;
+  }
+})();
+
 const state = {
-  users: [
-    {
-      id: "admin",
-      name: "총괄 관리자",
-      password: "admin123",
-      role: "admin",
-      process: "안전관리",
-    },
-    {
-      id: "guest",
-      name: "일반 담당자",
-      password: "guest123",
-      role: "user",
-      process: "공정 A",
-    },
-  ],
+  users: DEFAULT_USERS.map((user) => ({ ...user })),
   currentUser: null,
   activeTab: "dashboard",
   visitors: [],
   logs: [],
 };
 
+const uiState = {
+  statusFilter: "all",
+  cardFilter: "all",
+  searchTerm: "",
+};
+
 function addLog(action, detail) {
   const timestamp = new Date();
   state.logs.unshift({ action, detail, user: state.currentUser?.name ?? "시스템", timestamp });
+  if (state.logs.length > 300) {
+    state.logs.length = 300;
+  }
+  persistState();
 }
 
 function formatKoreanDate(raw) {
@@ -89,6 +118,99 @@ function formatDateTime(dateRaw, timeRaw) {
   const time = formatTime(timeRaw);
   if (!date && !time) return "-";
   return `${date} ${time}`.trim();
+}
+
+function hydrateState() {
+  const persisted = loadPersistedState();
+  if (!persisted) {
+    return;
+  }
+
+  if (Array.isArray(persisted.users)) {
+    const merged = new Map(DEFAULT_USERS.map((user) => [user.id, { ...user }]));
+    persisted.users.forEach((user) => {
+      if (user?.id) {
+        merged.set(user.id, { ...user });
+      }
+    });
+    state.users = Array.from(merged.values());
+  }
+
+  if (Array.isArray(persisted.visitors)) {
+    state.visitors = persisted.visitors
+      .map(deserializeVisitor)
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  }
+
+  if (Array.isArray(persisted.logs)) {
+    state.logs = persisted.logs.map(deserializeLog);
+  }
+}
+
+function persistState() {
+  if (!storageAvailable) {
+    return;
+  }
+
+  const payload = {
+    users: state.users.map((user) => ({ ...user })),
+    visitors: state.visitors.map(serializeVisitor),
+    logs: state.logs.map(serializeLog),
+  };
+
+  try {
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+  } catch (error) {
+    console.warn("상태를 저장하지 못했습니다.", error);
+  }
+}
+
+function loadPersistedState() {
+  if (!storageAvailable) {
+    return null;
+  }
+
+  try {
+    const raw = window.localStorage.getItem(STORAGE_KEY);
+    if (!raw) {
+      return null;
+    }
+    return JSON.parse(raw);
+  } catch (error) {
+    console.warn("저장된 상태를 불러오지 못했습니다.", error);
+    return null;
+  }
+}
+
+function serializeVisitor(visitor) {
+  return {
+    ...visitor,
+    createdAt: visitor.createdAt instanceof Date ? visitor.createdAt.toISOString() : visitor.createdAt,
+  };
+}
+
+function deserializeVisitor(visitor) {
+  return {
+    ...visitor,
+    createdAt: visitor.createdAt ? new Date(visitor.createdAt) : new Date(),
+    visitDateFormatted: visitor.visitDateFormatted ?? formatKoreanDate(visitor.visitDateRaw),
+    visitTimeFormatted: visitor.visitTimeFormatted ?? formatKoreanTime(visitor.visitTimeRaw),
+    exitTimeFormatted: visitor.exitTimeFormatted ?? formatKoreanTime(visitor.exitTimeRaw),
+  };
+}
+
+function serializeLog(log) {
+  return {
+    ...log,
+    timestamp: log.timestamp instanceof Date ? log.timestamp.toISOString() : log.timestamp,
+  };
+}
+
+function deserializeLog(log) {
+  return {
+    ...log,
+    timestamp: log.timestamp ? new Date(log.timestamp) : new Date(),
+  };
 }
 
 function renderApp() {
@@ -494,28 +616,75 @@ function renderStatus() {
     return `<div class="section"><div class="empty-state">등록된 내방객 정보가 없습니다. 먼저 내방객을 등록하세요.</div></div>`;
   }
 
+  const keyword = uiState.searchTerm.trim().toLowerCase();
+  const filteredVisitors = state.visitors.filter((item) => {
+    const matchesStatus = uiState.statusFilter === "all" || item.visitStatus === uiState.statusFilter;
+    const matchesCard = uiState.cardFilter === "all" || item.cardStatus === uiState.cardFilter;
+    const searchable = [
+      item.companyName,
+      item.visitors?.join(" "),
+      item.escort,
+      item.purpose,
+      item.cardRepresentative,
+      item.cardContact,
+    ]
+      .filter(Boolean)
+      .map((value) => value.toString().toLowerCase());
+    const matchesKeyword = !keyword || searchable.some((value) => value.includes(keyword));
+    return matchesStatus && matchesCard && matchesKeyword;
+  });
+
+  const tableContent =
+    filteredVisitors.length === 0
+      ? `<div class="empty-state">검색 조건에 맞는 내방객 내역이 없습니다.</div>`
+      : `
+          <table class="table">
+            <thead>
+              <tr>
+                <th>방문 정보</th>
+                <th>상태</th>
+                <th>카드</th>
+                <th>인솔 / 목적</th>
+                <th>관리</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${filteredVisitors.map((item) => renderStatusRow(item)).join("")}
+            </tbody>
+          </table>
+        `;
+
   return `
     <section class="section">
       <div class="section-header">
         <h3 class="section-title">등록된 방문 내역</h3>
-        <span class="helper-text">상태 변경 시 로그가 자동으로 남습니다.</span>
+        <span class="helper-text">상태 변경 시 로그가 자동으로 남습니다. (표시: ${filteredVisitors.length}건 / 전체 ${state.visitors.length}건)</span>
       </div>
-      <table class="table">
-        <thead>
-          <tr>
-            <th>방문 정보</th>
-            <th>상태</th>
-            <th>카드</th>
-            <th>인솔 / 목적</th>
-            <th>관리</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${state.visitors
-            .map((item) => renderStatusRow(item))
-            .join("")}
-        </tbody>
-      </table>
+      <div class="filter-bar">
+        <div class="form-group">
+          <label for="status-search">검색</label>
+          <input id="status-search" value="${uiState.searchTerm}" placeholder="업체명, 방문자, 인솔자 검색" />
+        </div>
+        <div class="form-group">
+          <label for="status-filter">방문 상태</label>
+          <select id="status-filter">
+            <option value="all" ${uiState.statusFilter === "all" ? "selected" : ""}>전체</option>
+            ${VISIT_STATUSES.map(
+              (status) => `<option value="${status.value}" ${uiState.statusFilter === status.value ? "selected" : ""}>${status.label}</option>`
+            ).join("")}
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="card-filter">카드 상태</label>
+          <select id="card-filter">
+            <option value="all" ${uiState.cardFilter === "all" ? "selected" : ""}>전체</option>
+            ${CARD_STATUSES.map(
+              (status) => `<option value="${status.value}" ${uiState.cardFilter === status.value ? "selected" : ""}>${status.label}</option>`
+            ).join("")}
+          </select>
+        </div>
+      </div>
+      ${tableContent}
     </section>
   `;
 }
@@ -612,6 +781,25 @@ function cardStatusToTag(status) {
 }
 
 function wireStatus() {
+  const searchInput = document.getElementById("status-search");
+  const statusFilter = document.getElementById("status-filter");
+  const cardFilter = document.getElementById("card-filter");
+
+  searchInput?.addEventListener("input", (event) => {
+    uiState.searchTerm = event.target.value;
+    renderApp();
+  });
+
+  statusFilter?.addEventListener("change", (event) => {
+    uiState.statusFilter = event.target.value;
+    renderApp();
+  });
+
+  cardFilter?.addEventListener("change", (event) => {
+    uiState.cardFilter = event.target.value;
+    renderApp();
+  });
+
   document.querySelectorAll("table tbody tr").forEach((row) => {
     const id = row.dataset.id;
     const visitor = state.visitors.find((v) => v.id === id);
@@ -677,6 +865,7 @@ function wireStatus() {
           `${visitor.companyName} 카드 상태가 ${CARD_STATUSES.find((s) => s.value === cardStatus)?.label}로 변경되었습니다.`
         );
       }
+      persistState();
       alert("저장되었습니다.");
       renderApp();
     });
@@ -829,4 +1018,5 @@ function generateId() {
   return `visitor-${Date.now()}-${Math.random().toString(16).slice(2, 8)}`;
 }
 
+hydrateState();
 renderApp();

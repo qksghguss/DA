@@ -246,6 +246,22 @@ textarea {
   border-collapse: collapse;
 }
 
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 16px;
+  align-items: flex-end;
+}
+
+.filter-bar .form-group {
+  min-width: 200px;
+}
+
+.filter-bar input {
+  min-width: 240px;
+}
+
 .table th,
 .table td {
   text-align: left;
